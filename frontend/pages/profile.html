@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile — Prajapati Store</title>
+  <meta name="description" content="View and update your Prajapati Store profile, manage your account settings and view your order history." />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --terracotta: #c1440e;
+      --terracotta-dark: #9c3209;
+      --terracotta-light: #e8845a;
+      --cream: #fdf6ee;
+      --warm-white: #fffbf7;
+      --gray-100: #f7f3ef;
+      --gray-200: #ede8e3;
+      --gray-300: #d4cfc9;
+      --gray-400: #aaa49e;
+      --gray-500: #7a756f;
+      --gray-600: #4f4b46;
+      --gray-700: #2e2c29;
+      --gray-900: #1a1816;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,.13);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cream);
+      color: var(--gray-700);
+      min-height: 100vh;
+    }
+
+    /* ── Navbar ──────────────────────────────────── */
+    .profile-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(253,246,238,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+    }
+
+    .nav-logo {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-logo .logo-main {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--terracotta-dark);
+      letter-spacing: -0.5px;
+    }
+    .nav-logo .logo-sub {
+      font-size: 0.65rem;
+      color: var(--gray-400);
+      font-weight: 400;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .nav-link {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 50px;
+      transition: all 0.2s;
+    }
+    .nav-link:hover { background: var(--gray-200); color: var(--gray-900); }
+    .nav-link.active { background: var(--terracotta); color: white; }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--terracotta);
+      background: none;
+      border: 1.5px solid var(--terracotta);
+      border-radius: 50px;
+      padding: 7px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover { background: var(--terracotta); color: white; }
+
+    /* ── Toast ───────────────────────────────────── */
+    .toast-container {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      animation: slideIn 0.3s ease;
+      min-width: 260px;
+    }
+    .toast.success { background: #16a34a; color: white; }
+    .toast.error   { background: #dc2626; color: white; }
+    .toast.info    { background: var(--terracotta); color: white; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
+
+    /* ── Page Layout ─────────────────────────────── */
+    .profile-page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ── Avatar Sidebar ──────────────────────────── */
+    .profile-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .avatar-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 80px;
+      background: linear-gradient(135deg, var(--terracotta), var(--terracotta-dark));
+    }
+
+    .avatar-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--terracotta-light), var(--terracotta));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: white;
+      margin: 0 auto 1rem;
+      position: relative;
+      z-index: 1;
+      border: 4px solid white;
+      box-shadow: var(--shadow-md);
+      letter-spacing: -1px;
+    }
+
+    .avatar-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      margin-bottom: 4px;
+    }
+    .avatar-email {
+      font-size: 0.78rem;
+      color: var(--gray-400);
+    }
+    .member-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 0.75rem;
+      background: var(--success-light);
+      color: var(--success);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: all 0.2s;
+      border-bottom: 1px solid var(--gray-100);
+      text-decoration: none;
+    }
+    .sidebar-nav-item:last-child { border-bottom: none; }
+    .sidebar-nav-item i {
+      width: 20px;
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--gray-400);
+      transition: color 0.2s;
+    }
+    .sidebar-nav-item:hover {
+      background: var(--gray-100);
+      color: var(--terracotta);
+    }
+    .sidebar-nav-item:hover i { color: var(--terracotta); }
+    .sidebar-nav-item.active {
+      background: linear-gradient(135deg, rgba(193,68,14,.08), rgba(193,68,14,.04));
+      color: var(--terracotta-dark);
+      border-left: 3px solid var(--terracotta);
+    }
+    .sidebar-nav-item.active i { color: var(--terracotta); }
+
+    /* ── Main Content ────────────────────────────── */
+    .profile-main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .section-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .section-card-header {
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .section-card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--gray-900);
+    }
+    .section-card-title i {
+      color: var(--terracotta);
+      font-size: 1rem;
+    }
+    .section-card-body { padding: 1.75rem; }
+
+    /* ── Stats Bar ───────────────────────────────── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .stat-item {
+      background: var(--gray-100);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--terracotta-dark);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Form ────────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    .form-grid .full-width { grid-column: 1 / -1; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-input-wrap { position: relative; }
+    .form-input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-300);
+      font-size: 0.875rem;
+      pointer-events: none;
+    }
+    .form-input {
+      width: 100%;
+      padding: 11px 14px 11px 40px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      color: var(--gray-700);
+      background: var(--gray-100);
+      transition: all 0.2s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--terracotta);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(193,68,14,.08);
+    }
+    .form-input[readonly] {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .save-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--terracotta), var(--terracotta-dark));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 28px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: all 0.25s;
+      box-shadow: 0 4px 14px rgba(193,68,14,.35);
+    }
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(193,68,14,.4);
+    }
+    .save-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+    /* ── Orders ──────────────────────────────────── */
+    .order-card {
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 1rem;
+      transition: box-shadow 0.2s;
+    }
+    .order-card:last-child { margin-bottom: 0; }
+    .order-card:hover { box-shadow: var(--shadow-md); }
+    .order-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--gray-100);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .order-id {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--gray-900);
+    }
+    .order-date {
+      font-size: 0.75rem;
+      color: var(--gray-400);
+      margin-top: 2px;
+    }
+    .order-status {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .status-confirmed { background: #dcfce7; color: #16a34a; }
+    .status-pending   { background: #fef9c3; color: #854d0e; }
+    .status-shipped   { background: #dbeafe; color: #1d4ed8; }
+    .status-delivered { background: #ede9fe; color: #7c3aed; }
+    .status-cancelled { background: #fee2e2; color: #dc2626; }
+
+    .order-body {
+      padding: 14px 18px;
+    }
+    .order-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.845rem;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--gray-200);
+      color: var(--gray-600);
+    }
+    .order-item-row:last-child { border-bottom: none; }
+    .order-item-name { font-weight: 600; color: var(--gray-700); }
+    .order-item-qty { color: var(--gray-400); font-size: 0.78rem; }
+    .order-item-price { font-weight: 700; color: var(--terracotta-dark); }
+
+    .order-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: var(--gray-100);
+      border-top: 1px solid var(--gray-200);
+      font-size: 0.82rem;
+    }
+    .order-shipping { color: var(--success); font-weight: 600; }
+    .order-total-label { color: var(--gray-400); font-size: 0.72rem; }
+    .order-total-amount { font-size: 1.1rem; font-weight: 800; color: var(--terracotta-dark); }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-400);
+    }
+    .empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+    .empty-state h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--gray-500); }
+    .empty-state p { font-size: 0.85rem; }
+
+    /* ── Change Password ─────────────────────────── */
+    .section-tab { display: none; }
+    .section-tab.active { display: block; }
+
+    /* ── Responsive ──────────────────────────────── */
+    @media (max-width: 768px) {
+      .profile-page {
+        grid-template-columns: 1fr;
+        padding: 1.5rem 1rem 3rem;
+        gap: 1.25rem;
+      }
+      .form-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: repeat(3, 1fr); }
+      .profile-nav { padding: 0 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Navbar -->
+  <nav class="profile-nav" role="navigation" aria-label="Main navigation">
+    <a href="/" class="nav-logo">
+      <span class="logo-main">Prajapati Store</span>
+      <span class="logo-sub">Handcrafted with Love</span>
+    </a>
+    <div class="nav-actions">
+      <a href="/" class="nav-link">🏠 Shop</a>
+      <a href="/orders" class="nav-link">📦 Orders</a>
+      <button class="logout-btn" id="logout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- Profile Page -->
+  <div class="profile-page">
+
+    <!-- Sidebar -->
+    <aside class="profile-sidebar">
+
+      <!-- Avatar Card -->
+      <div class="avatar-card">
+        <div class="avatar-circle" id="avatar-initials">?</div>
+        <div class="avatar-name" id="sidebar-name">Loading…</div>
+        <div class="avatar-email" id="sidebar-email"></div>
+        <div class="member-badge"><i class="fa-solid fa-leaf"></i> Artisan Member</div>
+      </div>
+
+      <!-- Sidebar Nav -->
+      <nav class="sidebar-nav" role="tablist" aria-label="Profile sections">
+        <button class="sidebar-nav-item active" id="tab-info" role="tab" aria-selected="true" onclick="switchTab('info')">
+          <i class="fa-solid fa-user"></i> Personal Info
+        </button>
+        <button class="sidebar-nav-item" id="tab-orders" role="tab" aria-selected="false" onclick="switchTab('orders')">
+          <i class="fa-solid fa-box"></i> My Orders
+        </button>
+        <button class="sidebar-nav-item" id="tab-password" role="tab" aria-selected="false" onclick="switchTab('password')">
+          <i class="fa-solid fa-lock"></i> Change Password
+        </button>
+        <a href="/" class="sidebar-nav-item">
+          <i class="fa-solid fa-store"></i> Back to Shop
+        </a>
+      </nav>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="profile-main">
+
+      <!-- Stats -->
+      <div class="section-card">
+        <div class="section-card-body" style="padding: 1.25rem 1.75rem;">
+          <div class="stats-bar">
+            <div class="stat-item">
+              <div class="stat-value" id="stat-orders">–</div>
+              <div class="stat-label">Orders</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="stat-spent">–</div>
+              <div class="stat-label">Total Spent</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="stat-since">–</div>
+              <div class="stat-label">Member Since</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Info Tab -->
+      <div class="section-tab active" id="panel-info" role="tabpanel" aria-labelledby="tab-info">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title">
+              <i class="fa-solid fa-user"></i> Personal Information
+            </div>
+          </div>
+          <div class="section-card-body">
+            <form id="profile-form" novalidate>
+              <div class="form-grid">
+
+                <div class="form-group">
+                  <label class="form-label" for="pf-name">Full Name</label>
+                  <div class="form-input-wrap">
+                    <i class="fa-solid fa-user form-input-icon"></i>
+                    <input class="form-input" type="text" id="pf-name" placeholder="Your full name" required />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="pf-email">Email Address</label>
+                  <div class="form-input-wrap">
+                    <i class="fa-regular fa-envelope form-input-icon"></i>
+                    <input class="form-input" type="email" id="pf-email" placeholder="your@email.com" readonly />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="pf-phone">Phone Number</label>
+                  <div class="form-input-wrap">
+                    <i class="fa-solid fa-phone form-input-icon"></i>
+                    <input class="form-input" type="tel" id="pf-phone" placeholder="+91 98765 43210" />
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label" for="pf-address">Delivery Address</label>
+                  <div class="form-input-wrap">
+                    <i class="fa-solid fa-location-dot form-input-icon"></i>
+                    <input class="form-input" type="text" id="pf-address" placeholder="Street, City, State, PIN" />
+                  </div>
+                </div>
+
+              </div>
+
+              <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <button type="submit" class="save-btn" id="save-profile-btn">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                </button>
+                <span id="save-success-msg" style="display:none;color:#16a34a;font-size:.85rem;font-weight:700;">
+                  <i class="fa-solid fa-circle-check"></i> Profile updated!
+                </span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Tab -->
+      <div class="section-tab" id="panel-orders" role="tabpanel" aria-labelledby="tab-orders">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title">
+              <i class="fa-solid fa-box"></i> My Orders
+            </div>
+          </div>
+          <div class="section-card-body" id="orders-list-container">
+            <div class="empty-state">
+              <i class="fa-solid fa-spinner fa-spin" style="color:var(--terracotta);"></i>
+              <p>Loading your orders…</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change Password Tab -->
+      <div class="section-tab" id="panel-password" role="tabpanel" aria-labelledby="tab-password">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title">
+              <i class="fa-solid fa-lock"></i> Change Password
+            </div>
+          </div>
+          <div class="section-card-body">
+            <div style="padding: 1.5rem; background: var(--gray-100); border-radius: var(--radius-sm); border-left: 4px solid var(--terracotta); margin-bottom: 1.5rem;">
+              <p style="font-size: 0.85rem; color: var(--gray-600); font-weight: 600;">
+                <i class="fa-solid fa-shield-halved" style="color:var(--terracotta); margin-right:6px;"></i>
+                Your password is securely stored using bcrypt encryption. Choose a strong password with at least 6 characters.
+              </p>
+            </div>
+            <form id="password-form" novalidate>
+              <div style="display:flex; flex-direction:column; gap:1.25rem; max-width:420px;">
+
+                <div class="form-group">
+                  <label class="form-label" for="pw-current">Current Password</label>
+                  <div class="form-input-wrap">
+                    <i class="fa-solid fa-lock form-input-icon"></i>
+                    <input class="form-input" type="password" id="pw-current" placeholder="Your current password" required />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="pw-new">New Password</label>
+                  <div class="form-input-wrap">
+                    <i class="fa-solid fa-key form-input-icon"></i>
+                    <input class="form-input" type="password" id="pw-new" placeholder="Minimum 6 characters" required />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="pw-confirm">Confirm New Password</label>
+                  <div class="form-input-wrap">
+                    <i class="fa-solid fa-key form-input-icon"></i>
+                    <input class="form-input" type="password" id="pw-confirm" placeholder="Re-enter new password" required />
+                  </div>
+                </div>
+
+                <div>
+                  <button type="submit" class="save-btn" id="save-password-btn">
+                    <i class="fa-solid fa-shield-halved"></i> Update Password
+                  </button>
+                </div>
+
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../js/api.js?v=2.0"></script>
+  <script>
+    // ── Toast ──────────────────────────────────────────────
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const iconMap = { success: 'circle-check', info: 'circle-info', error: 'circle-exclamation' };
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fa-solid fa-${iconMap[type] || 'circle-info'}"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(30px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // ── Auth Guard ─────────────────────────────────────────
+    if (!API.isLoggedIn()) {
+      window.location.href = '/login?redirect=profile';
+    }
+
+    // ── Tab Switching ──────────────────────────────────────
+    function switchTab(tab) {
+      document.querySelectorAll('.section-tab').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.sidebar-nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById(`panel-${tab}`).classList.add('active');
+      document.getElementById(`tab-${tab}`)?.classList.add('active');
+
+      // Load orders when tab is clicked
+      if (tab === 'orders') loadOrders();
+    }
+
+    // ── Load Profile ───────────────────────────────────────
+    async function loadProfile() {
+      try {
+        const user = await API.auth.me();
+
+        // Avatar initials
+        const names = (user.full_name || '?').split(' ');
+        const initials = names.length >= 2
+          ? names[0][0] + names[names.length-1][0]
+          : names[0].slice(0, 2);
+        document.getElementById('avatar-initials').textContent = initials.toUpperCase();
+        document.getElementById('sidebar-name').textContent = user.full_name || '—';
+        document.getElementById('sidebar-email').textContent = user.email || '';
+
+        // Form fields
+        document.getElementById('pf-name').value    = user.full_name || '';
+        document.getElementById('pf-email').value   = user.email     || '';
+        document.getElementById('pf-phone').value   = user.phone     || '';
+        document.getElementById('pf-address').value = user.address   || '';
+
+        // Member since
+        if (user.created_at) {
+          const since = new Date(user.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+          document.getElementById('stat-since').textContent = since;
+        }
+
+        // Store locally
+        API.getUser && localStorage.setItem('ps_user', JSON.stringify(user));
+
+      } catch (err) {
+        showToast('Could not load profile: ' + err.message, 'error');
+      }
+    }
+
+    // ── Load Orders ────────────────────────────────────────
+    async function loadOrders() {
+      const container = document.getElementById('orders-list-container');
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fa-solid fa-spinner fa-spin" style="color:var(--terracotta);"></i>
+          <p>Loading your orders…</p>
+        </div>`;
+      try {
+        const res = await API.orders.list();
+        const orders = res.orders || [];
+
+        // Update stats
+        document.getElementById('stat-orders').textContent = orders.length;
+        const spent = orders.reduce((sum, o) => sum + (o.total_amount || 0), 0);
+        document.getElementById('stat-spent').textContent = spent > 0 ? `₹${spent.toLocaleString('en-IN')}` : '₹0';
+
+        if (orders.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <i class="fa-solid fa-box-open"></i>
+              <h3>No orders yet</h3>
+              <p>You haven't placed any orders. Start shopping!</p>
+              <a href="/" style="display:inline-flex;align-items:center;gap:8px;margin-top:1.5rem;padding:12px 24px;background:linear-gradient(135deg,var(--terracotta),var(--terracotta-dark));color:white;border-radius:50px;font-weight:700;font-size:.85rem;text-decoration:none;">
+                <i class="fa-solid fa-store"></i> Browse Products
+              </a>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = orders.map(order => {
+          const date = new Date(order.created_at).toLocaleDateString('en-IN', {
+            day: '2-digit', month: 'long', year: 'numeric'
+          });
+          const statusIcon = { confirmed:'✅', pending:'⏳', shipped:'🚚', delivered:'📦', cancelled:'❌' }[order.status] || '📋';
+          return `
+            <article class="order-card" aria-label="Order #${order.id}">
+              <div class="order-card-header">
+                <div>
+                  <div class="order-id">Order #${order.id}</div>
+                  <div class="order-date">${date} · ${order.payment_method?.toUpperCase()}</div>
+                </div>
+                <span class="order-status status-${order.status}">${statusIcon} ${order.status}</span>
+              </div>
+              <div class="order-body">
+                ${(order.items || []).map(item => `
+                  <div class="order-item-row">
+                    <span class="order-item-name">${item.product_name}</span>
+                    <span class="order-item-qty">× ${item.quantity}</span>
+                    <span class="order-item-price">₹${item.line_total.toLocaleString('en-IN')}</span>
+                  </div>`).join('')}
+                <div style="margin-top:.7rem;font-size:.8rem;color:var(--gray-400);">
+                  <i class="fa-solid fa-location-dot" style="color:var(--terracotta);margin-right:5px;"></i>
+                  ${order.shipping_address}
+                </div>
+              </div>
+              <div class="order-footer">
+                <div class="order-shipping">
+                  ${order.shipping_fee === 0 ? '🚚 Free Shipping' : `Shipping: ₹${order.shipping_fee}`}
+                </div>
+                <div style="text-align:right;">
+                  <div class="order-total-label">Order Total</div>
+                  <div class="order-total-amount">₹${order.total_amount.toLocaleString('en-IN')}</div>
+                </div>
+              </div>
+            </article>`;
+        }).join('');
+
+      } catch (err) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-triangle-exclamation" style="color:var(--terracotta);"></i>
+            <h3>Could not load orders</h3>
+            <p>${err.message}</p>
+          </div>`;
+      }
+    }
+
+    // ── Save Profile ───────────────────────────────────────
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('save-profile-btn');
+      const successMsg = document.getElementById('save-success-msg');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
+
+      try {
+        const updated = await API.auth.updateProfile({
+          full_name: document.getElementById('pf-name').value.trim(),
+          phone:     document.getElementById('pf-phone').value.trim(),
+          address:   document.getElementById('pf-address').value.trim(),
+        });
+
+        // Refresh avatar & sidebar
+        const names = (updated.full_name || '?').split(' ');
+        const initials = names.length >= 2 ? names[0][0] + names[names.length-1][0] : names[0].slice(0,2);
+        document.getElementById('avatar-initials').textContent = initials.toUpperCase();
+        document.getElementById('sidebar-name').textContent = updated.full_name;
+
+        localStorage.setItem('ps_user', JSON.stringify(updated));
+        showToast('✅ Profile updated successfully!', 'success');
+        successMsg.style.display = 'inline-flex';
+        setTimeout(() => successMsg.style.display = 'none', 3000);
+
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+      }
+    });
+
+    // ── Change Password ────────────────────────────────────
+    document.getElementById('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn     = document.getElementById('save-password-btn');
+      const newPw   = document.getElementById('pw-new').value;
+      const confirm = document.getElementById('pw-confirm').value;
+
+      if (newPw !== confirm) { showToast('New passwords do not match!', 'error'); return; }
+      if (newPw.length < 6)  { showToast('Password must be at least 6 characters.', 'error'); return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating…';
+
+      try {
+        // Re-login with current password to verify, then update via profile endpoint
+        const user = await API.auth.me();
+        await API.auth.login({ email: user.email, password: document.getElementById('pw-current').value });
+        // Call update-password endpoint
+        await API.auth.updatePassword({ password: newPw });
+        showToast('🔒 Password updated successfully!', 'success');
+        document.getElementById('password-form').reset();
+      } catch (err) {
+        showToast('Failed: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Update Password';
+      }
+    });
+
+    // ── Logout ─────────────────────────────────────────────
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      API.auth.logout();
+      showToast('👋 Logged out successfully', 'info');
+      setTimeout(() => window.location.href = '/', 900);
+    });
+
+    // ── Init ───────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadProfile();
+      await loadOrders(); // pre-load stats silently
+    });
+  </script>
+</body>
+</html>

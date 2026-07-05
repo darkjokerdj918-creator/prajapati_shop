@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prajapati Store – Handcrafted Pottery & Eco-Friendly Ganesha</title>
+  <meta name="description" content="Premium handcrafted pottery from Prajapati Store. Shop eco-friendly Ganesha idols, terracotta mugs, bowls, vases and traditional Indian pottery." />
+  <meta name="keywords" content="pottery, terracotta, eco-friendly ganesha, clay ganesha, handcrafted, indian pottery" />
+  <meta property="og:title" content="Prajapati Store – Handcrafted Pottery" />
+  <meta property="og:description" content="Premium eco-friendly Ganesha idols and household pottery, handcrafted by artisans." />
+  <meta property="og:type" content="website" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen" role="status" aria-label="Loading">
+    <div class="loader-logo">Prajapati <span>Store</span></div>
+    <div class="loader-bar"></div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- ══════════════════════════════════════════
+       NAVBAR
+       ══════════════════════════════════════════ -->
+  <header>
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+      <a href="/" class="nav-logo" aria-label="Prajapati Store Home">
+        <span class="logo-main">Prajapati Store</span>
+        <span class="logo-sub">Handcrafted with Love</span>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#hero" class="active">Home</a></li>
+        <li><a href="#ganesha-section">🪷 Eco Ganesha</a></li>
+        <li><a href="#household-section">🏺 Household</a></li>
+        <li><a href="#about-section">Our Story</a></li>
+        <li><a href="#newsletter">Contact</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <!-- Auth: logged-out state -->
+        <a href="/login" class="nav-icon-btn" id="auth-nav-btn" title="Login / Register" aria-label="Login">
+          <i class="fa-regular fa-user"></i>
+        </a>
+        <!-- Auth: logged-in state -->
+        <a href="/profile" class="nav-icon-btn" id="user-nav-btn" title="My Profile" aria-label="My profile" style="display:none;gap:4px;font-size:.78rem;font-weight:700;width:auto;padding:0 12px;border-radius:50px;background:rgba(193,68,14,.1);color:var(--terracotta-dark);">
+          <i class="fa-solid fa-user-circle" style="font-size:1rem;"></i>
+          <span id="user-nav-name"></span>
+        </a>
+        <a href="/orders" class="nav-icon-btn" title="My Orders" aria-label="My orders" style="display:none;" id="orders-nav-btn">
+          <i class="fa-solid fa-box"></i>
+        </a>
+        <button class="nav-icon-btn" id="logout-nav-btn" title="Logout" aria-label="Logout" style="display:none;">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+        <!-- Cart -->
+        <button class="nav-icon-btn" id="cart-btn" aria-label="Shopping Cart" title="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge hidden" id="cart-badge">0</span>
+        </button>
+        <!-- Hamburger -->
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="mobile-menu" role="dialog" aria-label="Mobile navigation">
+      <a href="#hero">🏠 Home</a>
+      <a href="#ganesha-section">🪷 Eco-Friendly Ganesha</a>
+      <a href="#household-section">🏺 Household Items</a>
+      <a href="#about-section">🌿 Our Story</a>
+      <a href="#testimonials">💬 Reviews</a>
+      <a href="/login" id="mobile-auth-link">👤 Login / Register</a>
+      <a href="/orders" id="mobile-orders-link" style="display:none;">📦 My Orders</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ══════════════════════════════════════════
+         HERO
+         ══════════════════════════════════════════ -->
+    <section id="hero" aria-label="Hero banner">
+      <div class="hero-bg"><div class="hero-bg-pattern"></div></div>
+      <div class="hero-content">
+        <div class="hero-eyebrow">Artisan Pottery Since 1985</div>
+        <h1 class="hero-title">Where Clay Becomes <em>Art</em></h1>
+        <p class="hero-desc">
+          Discover handcrafted eco-friendly Ganesha idols and traditional pottery, lovingly made by skilled artisans. Each piece carries the warmth of human touch and the spirit of the earth.
+        </p>
+        <div class="hero-btns">
+          <a href="#ganesha-section" class="btn-primary" id="shop-ganesha-btn">
+            <i class="fa-solid fa-hand-sparkles"></i> Shop Eco Ganesha
+          </a>
+          <a href="#household-section" class="btn-secondary" id="shop-household-btn">
+            <i class="fa-solid fa-store"></i> Household Items
+          </a>
+        </div>
+      </div>
+      <div class="hero-scroll-hint" aria-hidden="true">
+        <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+        <span>Scroll</span>
+      </div>
+    </section>
+
+    <!-- Announcement Banner removed -->
+
+    <!-- Home Decor Categories -->
+    <section class="decor-category-section" aria-label="Home decor categories">
+      <div class="container">
+        <div class="section-header section-header-small">
+          <div class="section-eyebrow">Home Decor</div>
+          <h2 class="section-title">Shop by decor category</h2>
+        </div>
+        <div class="category-strip-wrap">
+          <div class="category-strip" role="list">
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-couch"></i></span>
+              <span class="category-label">Bedding & decor</span>
+            </a>
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-fan"></i></span>
+              <span class="category-label">Appliances</span>
+            </a>
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-bicycle"></i></span>
+              <span class="category-label">Fitness</span>
+            </a>
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-helmet-safety"></i></span>
+              <span class="category-label">Automotive products</span>
+            </a>
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-pot-food"></i></span>
+              <span class="category-label">Kitchenware</span>
+            </a>
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-broom"></i></span>
+              <span class="category-label">Home improvement</span>
+            </a>
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-puzzle-piece"></i></span>
+              <span class="category-label">Toys</span>
+            </a>
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+              <span class="category-label">Tools</span>
+            </a>
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-house"></i></span>
+              <span class="category-label">Home essentials</span>
+            </a>
+            <a href="#household-section" class="category-card" role="listitem">
+              <span class="category-icon"><i class="fa-solid fa-tree-city"></i></span>
+              <span class="category-label">Outdoor</span>
+            </a>
+          </div>
+          <button id="category-scroll-next" class="category-scroll-btn" aria-label="Scroll categories">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search -->
+    <div class="search-section" aria-label="Product search">
+      <div class="search-wrapper">
+        <label for="search-input" class="sr-only">Search products</label>
+        <input type="search" id="search-input" class="search-input"
+          placeholder="Search for Ganesha idols, mugs, bowls, vases…" aria-label="Search products" />
+        <button class="search-btn" id="search-btn" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         ECO GANESHA SECTION
+         ══════════════════════════════════════════ -->
+    <section id="ganesha-section" class="section" aria-labelledby="ganesha-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-eyebrow">Spiritual & Sustainable</div>
+          <h2 class="section-title" id="ganesha-heading">🪷 Eco-Friendly Ganesha Collection</h2>
+          <p class="section-desc">
+            Celebrate with a conscience. Our Ganesha idols are handcrafted from 100% natural, biodegradable clay — safe for immersion, gentle on the planet.
+          </p>
+        </div>
+
+        <!-- Eco Badges -->
+        <div class="eco-badge-strip reveal">
+          <span class="eco-pill"><i class="fa-solid fa-leaf"></i> 100% Biodegradable</span>
+          <span class="eco-pill"><i class="fa-solid fa-droplet"></i> Safe for Immersion</span>
+          <span class="eco-pill"><i class="fa-solid fa-palette"></i> Natural Pigments</span>
+          <span class="eco-pill"><i class="fa-solid fa-recycle"></i> Zero Plastic</span>
+          <span class="eco-pill"><i class="fa-solid fa-hand-holding-heart"></i> Artisan Handcrafted</span>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar" id="ganesha-filters" role="group" aria-label="Filter Ganesha">
+          <button class="filter-btn active" data-filter="All" id="gf-all">All</button>
+          <button class="filter-btn" data-filter="Small" id="gf-small">Small</button>
+          <button class="filter-btn" data-filter="Medium" id="gf-medium">Medium</button>
+          <button class="filter-btn" data-filter="Large" id="gf-large">Large</button>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="product-grid" id="ganesha-grid" aria-label="Ganesha products"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         FEATURED CAROUSEL
+         ══════════════════════════════════════════ -->
+    <section id="featured-section" aria-labelledby="featured-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-eyebrow">Customer Favourites</div>
+          <h2 class="section-title" id="featured-heading">Bestselling Pieces</h2>
+          <!-- Short description removed per request -->
+        </div>
+        <div class="carousel-wrapper">
+          <div class="carousel-track" id="carousel-track" role="list" aria-label="Featured products"></div>
+        </div>
+        <div class="carousel-nav" aria-label="Carousel navigation">
+          <button class="carousel-nav-btn" id="carousel-prev" aria-label="Previous">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <div class="carousel-dots" id="carousel-dots" role="tablist"></div>
+          <button class="carousel-nav-btn" id="carousel-next" aria-label="Next">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         HOUSEHOLD SECTION
+         ══════════════════════════════════════════ -->
+    <section id="household-section" class="section section-alt" aria-labelledby="household-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-eyebrow">For Everyday Living</div>
+          <h2 class="section-title" id="household-heading">🏺 Household Pottery Collection</h2>
+          <p class="section-desc">
+            Bring the warmth and natural beauty of handcrafted pottery into your everyday life. From morning chai kulhads to elegant serving bowls.
+          </p>
+        </div>
+
+        <div class="list-controls" style="display:flex;justify-content:space-between;align-items:center;margin:1rem 0;gap:1rem;">
+          <div style="display:flex;gap:.5rem;align-items:center;">
+            <button id="view-grid" class="btn-secondary" aria-pressed="false">Grid</button>
+            <button id="view-list" class="btn-secondary" aria-pressed="true">List</button>
+          </div>
+          <div style="display:flex;gap:.5rem;align-items:center;">
+            <label for="sort-select" class="sr-only">Sort</label>
+            <select id="sort-select" aria-label="Sort products">
+              <option value="relevance">Relevance</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar" id="household-filters" role="group" aria-label="Filter household">
+          <button class="filter-btn active" data-filter="All" id="hf-all">All</button>
+          <button class="filter-btn" data-filter="Mugs" id="hf-mugs">☕ Mugs</button>
+          <button class="filter-btn" data-filter="Bowls" id="hf-bowls">🥣 Bowls</button>
+          <button class="filter-btn" data-filter="Vases" id="hf-vases">🌿 Vases</button>
+          <button class="filter-btn" data-filter="Pots" id="hf-pots">🏺 Pots</button>
+          <button class="filter-btn" data-filter="Plates" id="hf-plates">🍽️ Dinner Sets</button>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="product-grid" id="household-grid" aria-label="Household products"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         ABOUT
+         ══════════════════════════════════════════ -->
+    <section id="about-section" class="section" aria-labelledby="about-heading">
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-img-grid reveal-left">
+            <div class="img-main"><div class="about-img-placeholder">🏺</div></div>
+            <div class="img-side"><div class="about-img-placeholder">🪷</div></div>
+            <div class="img-side"><div class="about-img-placeholder">🌿</div></div>
+          </div>
+          <div class="about-content reveal-right">
+            <div class="section-header">
+              <div class="section-eyebrow">Our Story</div>
+              <h2 class="section-title" id="about-heading">Prajapati Store</h2>
+              <p class="section-desc">
+                At Prajapati Store, we bring the timeless beauty of handcrafted pottery to your home. Inspired by Vadodara’s pottery tradition, we offer authentic clay products made by skilled local artisans.
+              </p>
+              <p class="section-desc">
+                Each piece is crafted using hand throwing, hand printing, and kiln firing, making it truly unique. From elegant home décor and everyday pottery to 100% biodegradable Ganesha idols, our collection blends heritage, craftsmanship, and sustainability.
+              </p>
+              <p class="section-desc">
+                We support traditional artisans and promote eco-friendly living. Made from natural clay and sustainable materials, our products celebrate Indian craftsmanship while adding warmth, simplicity, and authenticity to every home.
+              </p>
+            </div>
+            <div class="about-features">
+              <div class="about-feature">
+                <div class="feature-icon">🏺</div>
+                <div class="feature-text"><strong>Vadodara Pottery Heritage</strong><span>Inspired by local ceramic tradition</span></div>
+              </div>
+              <div class="about-feature">
+                <div class="feature-icon">✋</div>
+                <div class="feature-text"><strong>Skilled Artisans</strong><span>Handcrafted by local experts</span></div>
+              </div>
+              <div class="about-feature">
+                <div class="feature-icon">🌿</div>
+                <div class="feature-text"><strong>Eco-Friendly Products</strong><span>Natural clay and sustainable materials</span></div>
+              </div>
+              <div class="about-feature">
+                <div class="feature-icon">🪷</div>
+                <div class="feature-text"><strong>Biodegradable Ganesha</strong><span>100% safe and earth-friendly idols</span></div>
+              </div>
+            </div>
+            <div style="margin-top:2rem;">
+              <a href="#ganesha-section" class="btn-primary">
+                <i class="fa-solid fa-arrow-right"></i> Explore Collections
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="section" aria-labelledby="testimonials-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-eyebrow">Customer Love</div>
+          <h2 class="section-title" id="testimonials-heading">What Our Customers Say</h2>
+        </div>
+        <div class="testimonials-grid">
+          <div class="testimonial-card reveal">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"The Ganesha idol was absolutely stunning. The craftsmanship is incredible, and it dissolved completely without leaving any residue. Will definitely order again!"</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">P</div>
+              <div><div class="author-name">Priya Sharma</div><div class="author-loc">Mumbai, Maharashtra</div></div>
+            </div>
+          </div>
+          <div class="testimonial-card reveal">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"Ordered the terracotta mug set and I'm in love! Exceptional quality, authentic designs, and eco-friendly packaging. Highly recommended!"</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">R</div>
+              <div><div class="author-name">Rahul Mehra</div><div class="author-loc">Jaipur, Rajasthan</div></div>
+            </div>
+          </div>
+          <div class="testimonial-card reveal">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"The clay matka pot keeps water cooler than a refrigerator! My whole family switched. Fast delivery, perfectly packed. 5 stars!"</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">A</div>
+              <div><div class="author-name">Ananya Krishnan</div><div class="author-loc">Bengaluru, Karnataka</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section id="newsletter" class="section" aria-labelledby="newsletter-heading">
+      <div class="container">
+        <div class="newsletter-inner reveal">
+          <div class="section-header">
+            <div class="section-eyebrow">Stay Connected</div>
+            <h2 class="section-title" id="newsletter-heading">Join Our Community</h2>
+            <p class="section-desc">Get early access to new collections, artisan stories, and exclusive discounts.</p>
+          </div>
+          <form class="newsletter-form" id="newsletter-form" novalidate aria-label="Newsletter signup">
+            <label for="newsletter-email" class="sr-only">Email address</label>
+            <input type="email" id="newsletter-email" class="newsletter-input"
+              placeholder="Your email address" required aria-required="true" />
+            <button type="submit" class="newsletter-btn" id="newsletter-submit-btn">
+              Subscribe <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+          <p class="newsletter-note">
+            <i class="fa-solid fa-lock" style="font-size:.7rem;"></i>
+            No spam, ever. Unsubscribe anytime.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════ -->
+  <footer role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-main">Prajapati <span>Store</span></div>
+        <div class="logo-sub">Handcrafted with Love</div>
+        <p>Bringing the ancient art of Indian pottery into modern homes. Every piece tells a story of skill, tradition, and love for the earth.</p>
+        <div class="social-links" aria-label="Social media">
+          <a href="#" class="social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-link" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+          <a href="#" class="social-link" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" class="social-link" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="#ganesha-section">Eco Ganesha</a></li>
+          <li><a href="#household-section">Household Pottery</a></li>
+          <li><a href="#about-section">About Us</a></li>
+          <li><a href="/login">Login / Register</a></li>
+          <li><a href="/orders">My Orders</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="#ganesha-section">Ganesha Idols</a></li>
+          <li><a href="#household-section">Clay Pots</a></li>
+          <li><a href="#household-section">Terracotta Mugs</a></li>
+          <li><a href="#household-section">Serving Bowls</a></li>
+          <li><a href="#household-section">Decorative Vases</a></li>
+          <li><a href="#household-section">Dinner Sets</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact Us</h4>
+        <div class="footer-contact-item"><i class="fa-solid fa-location-dot"></i><span>Craft Lane, Jaipur, Rajasthan 302001</span></div>
+        <div class="footer-contact-item"><i class="fa-solid fa-phone"></i><span>+91 98765 43210</span></div>
+        <div class="footer-contact-item"><i class="fa-solid fa-envelope"></i><span>hello@prajapatistore.in</span></div>
+        <div class="footer-contact-item"><i class="fa-solid fa-clock"></i><span>Mon–Sat: 9AM – 7PM</span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Prajapati Store. All rights reserved. Made with ❤️ in India.</p>
+      <div class="payment-icons" aria-label="Payment methods">
+        <span class="payment-icon">UPI</span>
+        <span class="payment-icon">Visa</span>
+        <span class="payment-icon">MC</span>
+        <span class="payment-icon">RuPay</span>
+        <span class="payment-icon">COD</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════
+       CART SIDEBAR
+       ══════════════════════════════════════════ -->
+  <div id="cart-overlay" class="cart-overlay" aria-hidden="true"></div>
+  <aside id="cart-sidebar" class="cart-sidebar" role="dialog" aria-modal="true" aria-label="Shopping Cart">
+    <div class="cart-header">
+      <h3>
+        <i class="fa-solid fa-bag-shopping" style="color:var(--terracotta);margin-right:8px;"></i>
+        Your Cart
+        <span class="cart-count-label" id="cart-count-label">0 items</span>
+      </h3>
+      <button class="cart-close-btn" id="cart-close-btn" aria-label="Close cart">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <div class="cart-empty" id="cart-empty" style="display:flex;">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <h4>Your cart is empty</h4>
+        <p>Add some beautiful pottery to get started!</p>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-subtotal">
+        <span>Subtotal</span>
+        <span class="cart-subtotal-amount" id="cart-subtotal">₹0</span>
+      </div>
+      <div class="cart-subtotal" style="margin-bottom:0;">
+        <span style="font-size:.8rem;color:var(--sage-dark);"><i class="fa-solid fa-truck"></i> Shipping</span>
+        <span style="font-size:.82rem;font-weight:700;color:var(--sage-dark);" id="cart-shipping">₹99</span>
+      </div>
+      <div class="cart-total">
+        <span>Total</span>
+        <span class="cart-total-amount" id="cart-total">₹0</span>
+      </div>
+      <button class="checkout-btn" id="checkout-btn">
+        <i class="fa-solid fa-lock"></i> Secure Checkout
+      </button>
+      <span class="continue-shopping" id="continue-shopping" role="button" tabindex="0">
+        ← Continue Shopping
+      </span>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT QUICK-VIEW MODAL
+       ══════════════════════════════════════════ -->
+  <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Product details">
+    <div id="product-modal" class="product-modal">
+      <div class="modal-gallery">
+        <div class="modal-main-img"><!-- JS populated --></div>
+        <button class="modal-close" id="modal-close-btn" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-info">
+        <div class="modal-category"></div>
+        <h2 class="modal-name"></h2>
+        <div class="modal-rating">
+          <div class="stars modal-stars"></div>
+          <span class="rating-count modal-rating-text"></span>
+        </div>
+        <div class="modal-price">
+          <span class="modal-price-current"></span>
+          <span class="modal-price-original"></span>
+          <span class="modal-discount" style="font-size:.78rem;color:var(--sage-dark);font-weight:700;"></span>
+        </div>
+        <p class="modal-desc"></p>
+        <div class="modal-features"></div>
+        <div class="modal-qty-row">
+          <span class="modal-qty-label">Qty:</span>
+          <div class="modal-qty-ctrl">
+            <button class="modal-qty-btn modal-qty-minus" aria-label="Decrease">−</button>
+            <span class="modal-qty-num">1</span>
+            <button class="modal-qty-btn modal-qty-plus" aria-label="Increase">+</button>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-add-cart" id="modal-add-cart-btn">
+            <i class="fa-solid fa-cart-plus"></i> Add to Cart
+          </button>
+          <button class="modal-wishlist-btn" id="modal-wishlist-btn" aria-label="Wishlist">
+            <i class="fa-regular fa-heart"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top -->
+  <button id="back-to-top" title="Back to top" aria-label="Back to top">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <!-- Scripts: load api.js first, then cart.js, auth.js, app.js -->
+  <script src="js/api.js?v=2.0"></script>
+  <script src="js/cart.js?v=2.0"></script>
+  <script src="js/auth.js?v=2.0"></script>
+  <script src="js/app.js?v=2.0"></script>
+
+  <!-- Auth-aware navbar state -->
+  <script>
+    (function() {
+      const loggedIn = !!localStorage.getItem('ps_token');
+      const user = (() => { try { return JSON.parse(localStorage.getItem('ps_user')||'null'); } catch { return null; } })();
+      const authBtn    = document.getElementById('auth-nav-btn');
+      const userBtn    = document.getElementById('user-nav-btn');
+      const ordersBtn  = document.getElementById('orders-nav-btn');
+      const logoutBtn  = document.getElementById('logout-nav-btn');
+      const mobileAuth = document.getElementById('mobile-auth-link');
+      const mobileOrd  = document.getElementById('mobile-orders-link');
+      const userName   = document.getElementById('user-nav-name');
+
+      if (loggedIn && user) {
+        if (authBtn)   authBtn.style.display = 'none';
+        if (userBtn)   { userBtn.style.display = 'flex'; }
+        if (userName)  userName.textContent = user.full_name?.split(' ')[0] || 'Account';
+        if (ordersBtn) ordersBtn.style.display = 'flex';
+        if (logoutBtn) logoutBtn.style.display = 'flex';
+        if (mobileAuth) mobileAuth.style.display = 'none';
+        if (mobileOrd)  mobileOrd.style.display = 'block';
+      }
+
+      logoutBtn?.addEventListener('click', () => {
+        localStorage.removeItem('ps_token');
+        localStorage.removeItem('ps_user');
+        window.location.reload();
+      });
+    })();
+  </script>
+</body>
+</html>

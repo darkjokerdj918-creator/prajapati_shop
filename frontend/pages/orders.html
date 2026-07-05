@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Orders — Prajapati Store</title>
+  <meta name="description" content="View your order history at Prajapati Store." />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/auth.css" />
+</head>
+<body>
+
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Navbar -->
+  <nav class="auth-nav" role="navigation" aria-label="Main navigation">
+    <a href="/" class="logo">
+      Prajapati Store
+      <span>Handcrafted with Love</span>
+    </a>
+    <div class="nav-right">
+      <a href="/" class="nav-link">🏠 Shop</a>
+      <a href="#" class="nav-link" id="logout-nav-btn">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Orders Page -->
+  <main class="orders-page" id="orders-page">
+    <h1>📦 My Orders</h1>
+    <p class="orders-subtitle">Track all your pottery orders from Prajapati Store</p>
+
+    <div id="orders-container">
+      <div class="loading-orders">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;color:var(--terracotta);display:block;margin-bottom:1rem;"></i>
+        Loading your orders…
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/api.js?v=2.0"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Guard: must be logged in
+      if (!API.isLoggedIn()) {
+        window.location.href = '/login?redirect=orders';
+        return;
+      }
+
+      // Logout
+      document.getElementById('logout-nav-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        API.auth.logout();
+        window.location.href = '/';
+      });
+
+      const container = document.getElementById('orders-container');
+
+      try {
+        const res = await API.orders.list();
+        const orders = res.orders || [];
+
+        if (orders.length === 0) {
+          container.innerHTML = `
+            <div class="empty-orders">
+              <i class="fa-solid fa-box-open"></i>
+              <h3>No orders yet</h3>
+              <p>You haven't placed any orders. Start shopping!</p>
+              <a href="/" style="display:inline-flex;align-items:center;gap:8px;margin-top:1.5rem;padding:13px 28px;background:linear-gradient(135deg,var(--terracotta),var(--terracotta-dark));color:white;border-radius:50px;font-weight:700;font-size:.88rem;letter-spacing:1px;text-transform:uppercase;">
+                <i class="fa-solid fa-store"></i> Browse Products
+              </a>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = orders.map(order => {
+          const date = new Date(order.created_at).toLocaleDateString('en-IN', {
+            day: '2-digit', month: 'long', year: 'numeric'
+          });
+          const statusClass = `status-${order.status}`;
+          const statusIcon = {
+            confirmed: '✅', pending: '⏳', shipped: '🚚', delivered: '📦', cancelled: '❌'
+          }[order.status] || '📋';
+
+          return `
+            <article class="order-card" aria-label="Order #${order.id}">
+              <div class="order-card-header">
+                <div>
+                  <div class="order-id">Order #${order.id}</div>
+                  <div class="order-date">Placed on ${date} · ${order.payment_method.toUpperCase()}</div>
+                </div>
+                <span class="order-status ${statusClass}">${statusIcon} ${order.status}</span>
+              </div>
+
+              <div class="order-card-body">
+                ${(order.items || []).map(item => `
+                  <div class="order-item-row">
+                    <span class="order-item-name">${item.product_name}</span>
+                    <span class="order-item-qty">× ${item.quantity}</span>
+                    <span class="order-item-price">₹${item.line_total.toLocaleString('en-IN')}</span>
+                  </div>
+                `).join('')}
+                <div style="margin-top:.8rem;font-size:.82rem;color:var(--gray-600);">
+                  <i class="fa-solid fa-location-dot" style="margin-right:6px;color:var(--terracotta);"></i>
+                  ${order.shipping_address}
+                </div>
+              </div>
+
+              <div class="order-card-footer">
+                <div>
+                  <div class="order-total-label">
+                    ${order.shipping_fee === 0 ? '🚚 Free Shipping applied' : `Shipping: ₹${order.shipping_fee}`}
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="order-total-label">Order Total</div>
+                  <div class="order-total-amount">₹${order.total_amount.toLocaleString('en-IN')}</div>
+                </div>
+              </div>
+            </article>`;
+        }).join('');
+
+      } catch (err) {
+        container.innerHTML = `
+          <div class="empty-orders">
+            <i class="fa-solid fa-triangle-exclamation" style="color:var(--terracotta);"></i>
+            <h3>Could not load orders</h3>
+            <p>${err.message}</p>
+          </div>`;
+      }
+    });
+  </script>
+</body>
+</html>

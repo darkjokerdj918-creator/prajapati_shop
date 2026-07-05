@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: public.ecr.aws/docker/library/postgres:15-alpine
+    container_name: prajapati_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: prajapati_store
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d prajapati_store"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  web:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    container_name: prajapati_web
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+      - ./frontend:/frontend
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  pgdata:

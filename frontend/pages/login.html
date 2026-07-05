@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login / Register — Prajapati Store</title>
+  <meta name="description" content="Login or create an account at Prajapati Store to track your orders and save your wishlist." />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/auth.css" />
+</head>
+<body>
+
+  <!-- Toast -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Navbar -->
+  <nav class="auth-nav" role="navigation" aria-label="Main navigation">
+    <a href="/" class="logo">
+      Prajapati Store
+      <span>Handcrafted with Love</span>
+    </a>
+    <div class="nav-right">
+      <a href="/" class="nav-link">← Back to Shop</a>
+    </div>
+  </nav>
+
+  <!-- Auth Layout -->
+  <div class="auth-page">
+
+    <!-- Left decorative panel -->
+    <div class="auth-left" aria-hidden="true">
+      <div class="auth-left-content">
+        <div class="eyebrow">Prajapati Store</div>
+        <h1>Join Our <em>Artisan</em> Family</h1>
+        <p>
+          Create an account to track your orders, save your wishlist, and get
+          exclusive access to new collections and member-only discounts.
+        </p>
+        <div class="auth-perks">
+          <div class="auth-perk">
+            <i class="fa-solid fa-truck-fast"></i>
+            <span>Track your orders in real-time</span>
+          </div>
+          <div class="auth-perk">
+            <i class="fa-solid fa-heart"></i>
+            <span>Save your favourite pottery pieces</span>
+          </div>
+          <div class="auth-perk">
+            <i class="fa-solid fa-tag"></i>
+            <span>Exclusive member-only discounts</span>
+          </div>
+          <div class="auth-perk">
+            <i class="fa-solid fa-leaf"></i>
+            <span>Early access to eco-friendly collections</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="auth-right">
+      <div class="auth-box">
+        <div class="auth-box-header">
+          <h2>Welcome 🏺</h2>
+          <p>Sign in to your account or create a new one</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="auth-tabs" role="tablist" aria-label="Login or Register">
+          <button class="auth-tab active" id="login-tab" role="tab" aria-selected="true" aria-controls="login-panel">
+            Sign In
+          </button>
+          <button class="auth-tab" id="register-tab" role="tab" aria-selected="false" aria-controls="register-panel">
+            Register
+          </button>
+        </div>
+
+        <!-- LOGIN PANEL -->
+        <div class="auth-panel active" id="login-panel" role="tabpanel" aria-labelledby="login-tab">
+          <form id="login-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="login-email">Email Address</label>
+              <div class="form-input-wrap">
+                <i class="fa-regular fa-envelope form-input-icon"></i>
+                <input
+                  class="form-input has-icon"
+                  type="email"
+                  id="login-email"
+                  placeholder="your@email.com"
+                  required
+                  autocomplete="email"
+                  aria-required="true"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="login-password">Password</label>
+              <div class="form-input-wrap">
+                <i class="fa-solid fa-lock form-input-icon"></i>
+                <input
+                  class="form-input has-icon has-toggle"
+                  type="password"
+                  id="login-password"
+                  placeholder="Your password"
+                  required
+                  autocomplete="current-password"
+                  aria-required="true"
+                />
+                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="auth-submit-btn" id="login-submit" data-label="Sign In →">
+              <i class="fa-solid fa-right-to-bracket"></i> Sign In
+            </button>
+          </form>
+          <div class="auth-footer-text" style="margin-top:1rem;">
+            Don't have an account? <a href="#register" id="go-register">Create one →</a>
+          </div>
+        </div>
+
+        <!-- REGISTER PANEL -->
+        <div class="auth-panel" id="register-panel" role="tabpanel" aria-labelledby="register-tab">
+          <form id="register-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="reg-name">Full Name</label>
+              <div class="form-input-wrap">
+                <i class="fa-solid fa-user form-input-icon"></i>
+                <input
+                  class="form-input has-icon"
+                  type="text"
+                  id="reg-name"
+                  placeholder="Your full name"
+                  required
+                  autocomplete="name"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-email">Email Address</label>
+              <div class="form-input-wrap">
+                <i class="fa-regular fa-envelope form-input-icon"></i>
+                <input
+                  class="form-input has-icon"
+                  type="email"
+                  id="reg-email"
+                  placeholder="your@email.com"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-phone">Phone (optional)</label>
+              <div class="form-input-wrap">
+                <i class="fa-solid fa-phone form-input-icon"></i>
+                <input
+                  class="form-input has-icon"
+                  type="tel"
+                  id="reg-phone"
+                  placeholder="+91 98765 43210"
+                  autocomplete="tel"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-password">Password</label>
+              <div class="form-input-wrap">
+                <i class="fa-solid fa-lock form-input-icon"></i>
+                <input
+                  class="form-input has-icon has-toggle"
+                  type="password"
+                  id="reg-password"
+                  placeholder="Minimum 6 characters"
+                  required
+                  autocomplete="new-password"
+                />
+                <button type="button" class="toggle-password" aria-label="Toggle password">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-confirm">Confirm Password</label>
+              <div class="form-input-wrap">
+                <i class="fa-solid fa-lock form-input-icon"></i>
+                <input
+                  class="form-input has-icon has-toggle"
+                  type="password"
+                  id="reg-confirm"
+                  placeholder="Re-enter your password"
+                  required
+                  autocomplete="new-password"
+                />
+                <button type="button" class="toggle-password" aria-label="Toggle confirm password">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="auth-submit-btn" id="register-submit" data-label="Create Account →">
+              <i class="fa-solid fa-user-plus"></i> Create Account
+            </button>
+          </form>
+          <div class="auth-footer-text" style="margin-top:1rem;">
+            Already have an account? <a href="#login" id="go-login">Sign in →</a>
+          </div>
+        </div>
+
+        <p style="text-align:center;font-size:0.72rem;color:var(--gray-400);margin-top:1.5rem;">
+          By continuing, you agree to our Terms of Service and Privacy Policy.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js?v=2.0"></script>
+  <script src="../js/auth.js?v=2.0"></script>
+  <script>
+    // Quick nav between tabs
+    document.getElementById('go-register')?.addEventListener('click', (e) => {
+      e.preventDefault(); document.getElementById('register-tab').click();
+    });
+    document.getElementById('go-login')?.addEventListener('click', (e) => {
+      e.preventDefault(); document.getElementById('login-tab').click();
+    });
+  </script>
+</body>
+</html>
