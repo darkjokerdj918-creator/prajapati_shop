@@ -15,11 +15,12 @@ class OrderRepository:
 
     def add_item(self, db: Session, order_id: int, product_id: str,
                  product_name: str, quantity: int,
-                 unit_price: float) -> OrderItem:
+                 unit_price: float, ticket_code: str) -> OrderItem:
         item = OrderItem(
             order_id=order_id, product_id=product_id,
             product_name=product_name, quantity=quantity,
-            unit_price=unit_price, line_total=unit_price * quantity
+            unit_price=unit_price, line_total=unit_price * quantity,
+            ticket_code=ticket_code
         )
         db.add(item)
         db.commit()
