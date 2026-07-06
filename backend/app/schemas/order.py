@@ -10,6 +10,7 @@ class OrderItemOut(BaseModel):
     quantity: int
     unit_price: float
     line_total: float
+    ticket_code: Optional[str] = None
 
     model_config = {"from_attributes": True}
 
@@ -24,6 +25,7 @@ class OrderCreate(BaseModel):
 
 class OrderOut(BaseModel):
     id: int
+    booking_code: Optional[str] = None
     customer_name: str
     customer_email: str
     customer_phone: Optional[str] = None

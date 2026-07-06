@@ -19,6 +19,12 @@
 
   <!-- Loading Screen -->
   <div id="loading-screen" role="status" aria-label="Loading">
+    <div class="loader-glow-orb"></div>
+    <svg class="loader-pot-svg" viewBox="0 0 100 100" width="80" height="80" aria-hidden="true">
+      <path class="pot-outline" d="M35,75 C35,75 25,58 25,45 C25,32 37,27 47,27 C49,27 49,24 49,22 L51,22 C51,24 51,27 53,27 C63,27 75,32 75,45 C75,58 65,75 65,75 Z" />
+      <path class="pot-rim" d="M43,22 L57,22" />
+      <ellipse class="pot-opening" cx="50" cy="22" rx="7" ry="1.5" />
+    </svg>
     <div class="loader-logo">Prajapati <span>Store</span></div>
     <div class="loader-bar"></div>
   </div>
@@ -59,6 +65,11 @@
         </a>
         <button class="nav-icon-btn" id="logout-nav-btn" title="Logout" aria-label="Logout" style="display:none;">
           <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+        <!-- Wishlist -->
+        <button class="nav-icon-btn" id="wishlist-nav-btn" aria-label="My Wishlist" title="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          <span class="cart-badge hidden" id="wishlist-badge" style="background:var(--terracotta);">0</span>
         </button>
         <!-- Cart -->
         <button class="nav-icon-btn" id="cart-btn" aria-label="Shopping Cart" title="Cart">
@@ -113,62 +124,6 @@
 
     <!-- Announcement Banner removed -->
 
-    <!-- Home Decor Categories -->
-    <section class="decor-category-section" aria-label="Home decor categories">
-      <div class="container">
-        <div class="section-header section-header-small">
-          <div class="section-eyebrow">Home Decor</div>
-          <h2 class="section-title">Shop by decor category</h2>
-        </div>
-        <div class="category-strip-wrap">
-          <div class="category-strip" role="list">
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-couch"></i></span>
-              <span class="category-label">Bedding & decor</span>
-            </a>
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-fan"></i></span>
-              <span class="category-label">Appliances</span>
-            </a>
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-bicycle"></i></span>
-              <span class="category-label">Fitness</span>
-            </a>
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-helmet-safety"></i></span>
-              <span class="category-label">Automotive products</span>
-            </a>
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-pot-food"></i></span>
-              <span class="category-label">Kitchenware</span>
-            </a>
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-broom"></i></span>
-              <span class="category-label">Home improvement</span>
-            </a>
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-puzzle-piece"></i></span>
-              <span class="category-label">Toys</span>
-            </a>
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>
-              <span class="category-label">Tools</span>
-            </a>
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-house"></i></span>
-              <span class="category-label">Home essentials</span>
-            </a>
-            <a href="#household-section" class="category-card" role="listitem">
-              <span class="category-icon"><i class="fa-solid fa-tree-city"></i></span>
-              <span class="category-label">Outdoor</span>
-            </a>
-          </div>
-          <button id="category-scroll-next" class="category-scroll-btn" aria-label="Scroll categories">
-            <i class="fa-solid fa-chevron-right"></i>
-          </button>
-        </div>
-      </div>
-    </section>
 
     <!-- Search -->
     <div class="search-section" aria-label="Product search">
@@ -255,13 +210,17 @@
           </p>
         </div>
 
-        <div class="list-controls" style="display:flex;justify-content:space-between;align-items:center;margin:1rem 0;gap:1rem;">
-          <div style="display:flex;gap:.5rem;align-items:center;">
-            <button id="view-grid" class="btn-secondary" aria-pressed="false">Grid</button>
-            <button id="view-list" class="btn-secondary" aria-pressed="true">List</button>
+        <div class="list-controls-bar">
+          <div class="view-toggle-group">
+            <button id="view-grid" class="view-toggle-btn" aria-pressed="false" aria-label="Grid View">
+              <i class="fa-solid fa-table-cells-large"></i>
+            </button>
+            <button id="view-list" class="view-toggle-btn" aria-pressed="true" aria-label="List View">
+              <i class="fa-solid fa-list"></i>
+            </button>
           </div>
-          <div style="display:flex;gap:.5rem;align-items:center;">
-            <label for="sort-select" class="sr-only">Sort</label>
+          <div class="sort-group">
+            <label for="sort-select" class="sort-label"><i class="fa-solid fa-arrow-down-wide-short"></i> Sort By:</label>
             <select id="sort-select" aria-label="Sort products">
               <option value="relevance">Relevance</option>
               <option value="price-asc">Price: Low to High</option>
@@ -274,11 +233,15 @@
         <!-- Filters -->
         <div class="filter-bar" id="household-filters" role="group" aria-label="Filter household">
           <button class="filter-btn active" data-filter="All" id="hf-all">All</button>
+          <button class="filter-btn" data-filter="Pots" id="hf-pots">🏺 Matkas & Pots</button>
           <button class="filter-btn" data-filter="Mugs" id="hf-mugs">☕ Mugs</button>
+          <button class="filter-btn" data-filter="Glass" id="hf-glass">🍵 Glasses / Kulhads</button>
+          <button class="filter-btn" data-filter="Plates" id="hf-plates">🍽️ Dinner Sets</button>
+          <button class="filter-btn" data-filter="Cookware" id="hf-cookware">🍳 Cookware & Kadais</button>
           <button class="filter-btn" data-filter="Bowls" id="hf-bowls">🥣 Bowls</button>
           <button class="filter-btn" data-filter="Vases" id="hf-vases">🌿 Vases</button>
-          <button class="filter-btn" data-filter="Pots" id="hf-pots">🏺 Pots</button>
-          <button class="filter-btn" data-filter="Plates" id="hf-plates">🍽️ Dinner Sets</button>
+          <button class="filter-btn" data-filter="Diyas" id="hf-diyas">🪔 Diyas</button>
+          <button class="filter-btn" data-filter="Decorative" id="hf-decorative">🎨 Decorative items</button>
         </div>
 
         <!-- Product Grid -->
@@ -459,6 +422,30 @@
       </div>
     </div>
   </footer>
+
+  <!-- ══════════════════════════════════════════
+       WISHLIST SIDEBAR
+       ══════════════════════════════════════════ -->
+  <div id="wishlist-overlay" class="cart-overlay" aria-hidden="true"></div>
+  <aside id="wishlist-sidebar" class="cart-sidebar" role="dialog" aria-modal="true" aria-label="My Wishlist">
+    <div class="cart-header">
+      <h3>
+        <i class="fa-solid fa-heart" style="color:var(--terracotta);margin-right:8px;"></i>
+        My Wishlist
+        <span class="cart-count-label" id="wishlist-count-label">0 items</span>
+      </h3>
+      <button class="cart-close-btn" id="wishlist-close-btn" aria-label="Close wishlist">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="cart-items" id="wishlist-items">
+      <div class="cart-empty" id="wishlist-empty" style="display:flex;">
+        <i class="fa-solid fa-heart"></i>
+        <h4>Your wishlist is empty</h4>
+        <p>Save your favorite items here!</p>
+      </div>
+    </div>
+  </aside>
 
   <!-- ══════════════════════════════════════════
        CART SIDEBAR

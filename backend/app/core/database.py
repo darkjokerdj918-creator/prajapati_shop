@@ -35,5 +35,5 @@ def get_db():
 
 def create_tables():
     """Create all tables on startup."""
-    from app.models import product, user, cart, order, newsletter  # noqa: F401
+    from app.models import product, user, admin, cart, order, newsletter  # noqa: F401
     Base.metadata.create_all(bind=engine)

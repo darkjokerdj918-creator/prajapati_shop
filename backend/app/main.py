@@ -59,6 +59,15 @@ app.add_middleware(
 # ── API routes ─────────────────────────────────────────────
 app.include_router(api_router)
 
+# ── Serve admin static files ───────────────────────────────
+ADMIN_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "prajapati", "admin"))
+if not os.path.isdir(ADMIN_DIR):
+    if os.path.isdir("/prajapati/admin"):
+        ADMIN_DIR = "/prajapati/admin"
+
+if os.path.isdir(ADMIN_DIR):
+    app.mount("/prajapati/admin", StaticFiles(directory=ADMIN_DIR, html=True), name="admin")
+
 # ── Serve frontend static files ────────────────────────────
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "frontend")
 

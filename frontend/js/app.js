@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   initCategoryStrip();
 
   await initCart?.();       // from cart.js
+  
+  initWishlistEvents();
+  fetchAndRenderWishlist();
 
   initFilters();
   initSearch();
@@ -79,12 +82,21 @@ function initNavbar() {
 }
 
 function updateActiveNavLink() {
-  const sectionIds = ['hero', 'ganesha-section', 'household-section', 'about-section'];
+  const sectionIds = ['hero', 'ganesha-section', 'household-section', 'about-section', 'newsletter'];
   let current = '';
-  sectionIds.forEach(id => {
-    const el = document.getElementById(id);
-    if (el && el.getBoundingClientRect().top <= 100) current = id;
-  });
+  
+  // Check if page is scrolled to the absolute bottom (Contact section)
+  const isBottom = (window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 50;
+  
+  if (isBottom) {
+    current = 'newsletter';
+  } else {
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 120) current = id;
+    });
+  }
+
   document.querySelectorAll('.nav-links a').forEach(a => {
     a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
   });
@@ -148,6 +160,10 @@ function initListingControls() {
   const vl = document.getElementById('view-list');
   const sort = document.getElementById('sort-select');
   if (vg && vl) {
+    // Set initial active state based on localStorage
+    vg.setAttribute('aria-pressed', listingView === 'grid' ? 'true' : 'false');
+    vl.setAttribute('aria-pressed', listingView === 'list' ? 'true' : 'false');
+
     vg.addEventListener('click', () => {
       listingView = 'grid';
       vg.setAttribute('aria-pressed','true');
@@ -231,11 +247,14 @@ function renderProductCard(p) {
         </div>
       </div>
       <div class="product-info">
-        <div class="product-category">${p.category === 'ganesha' ? '🪷 Eco Ganesha' : '🏠 Household'} · ${p.subcat}</div>
-        <h3 class="product-name"><a href="pages/product.html?id=${p.id}" class="product-link">${p.name}</a></h3>
-        <div class="product-rating">
-          <div class="stars">${renderStars(p.rating)}</div>
-          <span class="rating-count">${p.rating} (${p.reviews})</span>
+        <div class="product-details-wrap">
+          <div class="product-category">${p.category === 'ganesha' ? '🪷 Eco Ganesha' : '🏠 Household'} · ${p.subcat}</div>
+          <h3 class="product-name"><a href="pages/product.html?id=${p.id}" class="product-link">${p.name}</a></h3>
+          <div class="product-rating">
+            <div class="stars">${renderStars(p.rating)}</div>
+            <span class="rating-count">${p.rating} (${p.reviews})</span>
+          </div>
+          <p class="product-desc-short">${p.description || ''}</p>
         </div>
         <div class="product-price-row">
           <div class="price-group">
@@ -246,7 +265,7 @@ function renderProductCard(p) {
             <i class="fa-solid fa-cart-plus"></i>
           </button>
         </div>
-        ${discount > 0 ? `<div style="font-size:0.7rem;color:var(--sage-dark);margin-top:5px;font-weight:700;">Save ${discount}%</div>` : ''}
+        ${discount > 0 ? `<div class="discount-save-tag">Save ${discount}%</div>` : ''}
       </div>
     </div>`;
 }
@@ -295,6 +314,7 @@ function toggleWishlist(id, btn) {
     showToast('💛 Added to wishlist!', 'success');
   }
   localStorage.setItem('ps_wishlist', JSON.stringify(wishlist));
+  fetchAndRenderWishlist();
 }
 
 // ── Product Modal ──────────────────────────────────────────
@@ -569,7 +589,132 @@ function showToast(message, type = 'info') {
   }, 3500);
 }
 
+// ── Wishlist Drawer Logic ──────────────────────────────────
+async function fetchAndRenderWishlist() {
+  const itemsEl = document.getElementById('wishlist-items');
+  const emptyEl = document.getElementById('wishlist-empty');
+  const countEl = document.getElementById('wishlist-count-label');
+  const badgeEl = document.getElementById('wishlist-badge');
+  
+  if (!itemsEl) return;
+  
+  // Update badge
+  if (badgeEl) {
+    if (wishlist.length > 0) {
+      badgeEl.textContent = wishlist.length;
+      badgeEl.classList.remove('hidden');
+    } else {
+      badgeEl.classList.add('hidden');
+    }
+  }
+  
+  if (countEl) countEl.textContent = `${wishlist.length} item${wishlist.length !== 1 ? 's' : ''}`;
+  
+  // Clear old items
+  itemsEl.querySelectorAll('.cart-item').forEach(el => el.remove());
+  
+  if (wishlist.length === 0) {
+    if (emptyEl) emptyEl.style.display = 'flex';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  
+  try {
+    const res = await API.products.list();
+    const allProds = res.products || [];
+    const wishlistProducts = allProds.filter(p => wishlist.includes(p.id));
+    
+    const html = wishlistProducts.map(p => `
+      <div class="cart-item" data-wishlist-id="${p.id}">
+        <div class="cart-item-img">
+          ${p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<div class="cart-item-emoji">${p.emoji}</div>`}
+        </div>
+        <div class="cart-item-info">
+          <div class="cart-item-name" style="cursor:pointer;font-weight:700;" onclick="openProductModalFromWishlist('${p.id}')">${p.name}</div>
+          <div class="cart-item-cat">₹${p.price.toLocaleString('en-IN')}</div>
+          <button class="add-to-cart-btn-wish" data-id="${p.id}" data-name="${p.name}" style="background:var(--terracotta);color:white;border:none;border-radius:20px;padding:5px 12px;font-size:0.72rem;margin-top:6px;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-cart-plus"></i> Add to Cart
+          </button>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;justify-content:center;">
+          <button class="wishlist-item-remove" data-id="${p.id}" aria-label="Remove item" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:1.1rem;padding:5px;">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+    
+    itemsEl.insertAdjacentHTML('beforeend', html);
+    bindWishlistItemEvents();
+  } catch (err) {
+    console.warn('Wishlist render failed:', err.message);
+  }
+}
+
+function initWishlistEvents() {
+  const wishBtn = document.getElementById('wishlist-nav-btn');
+  const wishOverlay = document.getElementById('wishlist-overlay');
+  const wishSidebar = document.getElementById('wishlist-sidebar');
+  const wishCloseBtn = document.getElementById('wishlist-close-btn');
+  
+  if (wishBtn) {
+    wishBtn.addEventListener('click', () => {
+      // Close cart sidebar if open
+      document.getElementById('cart-overlay')?.classList.remove('open');
+      document.getElementById('cart-sidebar')?.classList.remove('open');
+      
+      wishOverlay?.classList.add('open');
+      wishSidebar?.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      fetchAndRenderWishlist();
+    });
+  }
+  
+  const closeWishlist = () => {
+    wishOverlay?.classList.remove('open');
+    wishSidebar?.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  
+  if (wishOverlay) wishOverlay.addEventListener('click', closeWishlist);
+  if (wishCloseBtn) wishCloseBtn.addEventListener('click', closeWishlist);
+}
+
+function bindWishlistItemEvents() {
+  document.querySelectorAll('.wishlist-item-remove').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      toggleWishlist(id, null);
+      document.querySelectorAll(`.wishlist-btn[data-id="${id}"]`).forEach(b => {
+        b.classList.remove('wishlist-active');
+        b.innerHTML = '<i class="fa-regular fa-heart"></i>';
+      });
+    });
+  });
+  
+  document.querySelectorAll('.add-to-cart-btn-wish').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (typeof addToCart === 'function') {
+        addToCart(btn.dataset.id, btn.dataset.name);
+      }
+    });
+  });
+}
+
+window.openProductModalFromWishlist = function(id) {
+  document.getElementById('wishlist-overlay')?.classList.remove('open');
+  document.getElementById('wishlist-sidebar')?.classList.remove('open');
+  document.body.style.overflow = '';
+  openProductModal(id);
+};
+
 // ── Globals ────────────────────────────────────────────────
 window.showToast        = showToast;
+// Expose functions for wishlist
+window.fetchAndRenderWishlist = fetchAndRenderWishlist;
+window.initWishlistEvents     = initWishlistEvents;
 window.closeProductModal = closeProductModal;
 window.openProductModal  = openProductModal;
+

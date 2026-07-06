@@ -1,4 +1,6 @@
 """Service — Order business logic"""
+import random
+import string
 from typing import Optional
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
@@ -39,10 +41,17 @@ class OrderService:
         shipping_fee = 0.0 if subtotal >= SHIPPING_THRESHOLD else SHIPPING_FEE
         total = subtotal + shipping_fee
 
+        # Generate unique booking code
+        chars = string.ascii_uppercase + string.digits
+        p1 = ''.join(random.choices(chars, k=4))
+        p2 = ''.join(random.choices(chars, k=4))
+        booking_code = f"PRAJ-{p1}-{p2}"
+
         # Create order record
         order = order_repo.create(
             db,
             user_id=user.id if user else None,
+            booking_code=booking_code,
             customer_name=data.customer_name,
             customer_email=data.customer_email,
             customer_phone=data.customer_phone,
@@ -58,9 +67,15 @@ class OrderService:
         for item in items:
             p = product_repo.get_by_id(db, item.product_id)
             name = p.name if p else "Unknown"
+            
+            # Generate unique ticket code for each item
+            t1 = ''.join(random.choices(chars, k=4))
+            t2 = ''.join(random.choices(chars, k=4))
+            ticket_code = f"TKT-{t1}-{t2}"
+
             order_repo.add_item(
                 db, order.id, item.product_id, name,
-                item.quantity, item.unit_price
+                item.quantity, item.unit_price, ticket_code
             )
             order_items_out.append(OrderItemOut(
                 product_id=item.product_id,
@@ -68,6 +83,7 @@ class OrderService:
                 quantity=item.quantity,
                 unit_price=item.unit_price,
                 line_total=item.unit_price * item.quantity,
+                ticket_code=ticket_code,
             ))
 
         # Clear cart after order
@@ -75,6 +91,7 @@ class OrderService:
 
         order_out = OrderOut(
             id=order.id,
+            booking_code=order.booking_code,
             customer_name=order.customer_name,
             customer_email=order.customer_email,
             customer_phone=order.customer_phone,
@@ -95,10 +112,11 @@ class OrderService:
             items = order_repo.get_items(db, o.id)
             items_out = [OrderItemOut(
                 product_id=i.product_id, product_name=i.product_name,
-                quantity=i.quantity, unit_price=i.unit_price, line_total=i.line_total
+                quantity=i.quantity, unit_price=i.unit_price, line_total=i.line_total,
+                ticket_code=i.ticket_code
             ) for i in items]
             result.append(OrderOut(
-                id=o.id, customer_name=o.customer_name,
+                id=o.id, booking_code=o.booking_code, customer_name=o.customer_name,
                 customer_email=o.customer_email, customer_phone=o.customer_phone,
                 shipping_address=o.shipping_address, total_amount=o.total_amount,
                 shipping_fee=o.shipping_fee, status=o.status,
@@ -118,10 +136,11 @@ class OrderService:
         items = order_repo.get_items(db, o.id)
         items_out = [OrderItemOut(
             product_id=i.product_id, product_name=i.product_name,
-            quantity=i.quantity, unit_price=i.unit_price, line_total=i.line_total
+            quantity=i.quantity, unit_price=i.unit_price, line_total=i.line_total,
+            ticket_code=i.ticket_code
         ) for i in items]
         return OrderDetailResponse(order=OrderOut(
-            id=o.id, customer_name=o.customer_name,
+            id=o.id, booking_code=o.booking_code, customer_name=o.customer_name,
             customer_email=o.customer_email, customer_phone=o.customer_phone,
             shipping_address=o.shipping_address, total_amount=o.total_amount,
             shipping_fee=o.shipping_fee, status=o.status,

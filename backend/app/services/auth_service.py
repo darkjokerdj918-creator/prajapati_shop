@@ -30,6 +30,14 @@ class AuthService:
         )
 
     def login(self, db: Session, data: UserLogin) -> TokenResponse:
+        # Check if email belongs to an administrator
+        from app.repositories.admin_repo import admin_repo
+        if admin_repo.get_by_email(db, data.email):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admins cannot login through the user login page. Please use the admin panel login."
+            )
+            
         user = user_repo.get_by_email(db, data.email)
         if not user or not verify_password(data.password, user.hashed_password):
             raise HTTPException(
