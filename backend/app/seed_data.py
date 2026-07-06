@@ -202,7 +202,7 @@ PRODUCTS = [
         "id": "h5",
         "name": "Handmade Kulhad Set (6pc)",
         "category": "household",
-        "subcat": "Mugs",
+        "subcat": "Glass",
         "price": 399.0,
         "original_price": 529.0,
         "rating": 4.6,
@@ -282,7 +282,7 @@ PRODUCTS = [
         "rating": 4.6,
         "reviews": 34,
         "badge": "",
-        "image": "images/household/matka-stand/1.png",
+        "image": "images/household/matka-stand/Gemini_Generated_Image_fgknmbfgknmbfgkn.png",
         "emoji": "🪵",
         "description": (
             "A sturdy matka stand made with wrought iron and wooden slats to elevate and display your clay pot."
@@ -300,7 +300,7 @@ PRODUCTS = [
         "rating": 4.5,
         "reviews": 41,
         "badge": "sale",
-        "image": "images/household/terracotta-piggy-bank/1.png",
+        "image": "images/household/terracotta-piggy-bank/2.png",
         "emoji": "🐖",
         "description": (
             "A charming handcrafted terracotta piggy bank — a lovely gift for kids and a rustic décor piece."
@@ -318,7 +318,7 @@ PRODUCTS = [
         "rating": 4.9,
         "reviews": 76,
         "badge": "bestseller",
-        "image": "images/household/diyas-set/Gemini_Generated_Image_fgknmbfgknmbfgkn.png",
+        "image": "images/household/diyas-set/1.png",
         "emoji": "🪔",
         "description": (
             "A set of six traditional earthen diyas, perfect for festivals, pujas, and home décor."
@@ -348,7 +348,7 @@ PRODUCTS = [
         "id": "h13",
         "name": "Dahi Handi (Clay Pot)",
         "category": "household",
-        "subcat": "Crockery",
+        "subcat": "Cookware",
         "price": 349.0,
         "original_price": 449.0,
         "rating": 4.6,
@@ -366,7 +366,7 @@ PRODUCTS = [
         "id": "h14",
         "name": "Terracotta Tawa (Cooking Griddle)",
         "category": "household",
-        "subcat": "Crockery",
+        "subcat": "Cookware",
         "price": 799.0,
         "original_price": 999.0,
         "rating": 4.4,
@@ -385,9 +385,24 @@ PRODUCTS = [
 
 def seed():
     from app.models.product import Product
+    from app.models.admin import Admin
+    from app.core.security import hash_password
     create_tables()
     db = SessionLocal()
     try:
+        # Seed default admin user if not exists
+        admin = db.query(Admin).filter(Admin.email == "admin@prajapatistore.com").first()
+        if not admin:
+            hashed = hash_password("admin123")
+            admin_user = Admin(
+                full_name="Store Admin",
+                email="admin@prajapatistore.com",
+                hashed_password=hashed
+            )
+            db.add(admin_user)
+            db.commit()
+            print("[Success] Seeded default admin user: admin@prajapatistore.com / admin123")
+
         existing = db.query(Product).count()
         if existing > 0:
             print(f"[Info] Database already seeded with {existing} products. Skipping.")

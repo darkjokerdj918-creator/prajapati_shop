@@ -8,6 +8,7 @@ class Order(Base):
     __tablename__ = "orders"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    booking_code = Column(String(50), unique=True, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     customer_name = Column(String(150), nullable=False)
     customer_email = Column(String(200), nullable=False)
@@ -32,3 +33,4 @@ class OrderItem(Base):
     quantity = Column(Integer, nullable=False)
     unit_price = Column(Float, nullable=False)
     line_total = Column(Float, nullable=False)
+    ticket_code = Column(String(50), unique=True, nullable=True)

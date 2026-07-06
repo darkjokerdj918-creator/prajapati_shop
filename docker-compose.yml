@@ -31,6 +31,7 @@ services:
     volumes:
       - ./backend:/app
       - ./frontend:/frontend
+      - ./prajapati:/prajapati
     depends_on:
       db:
         condition: service_healthy

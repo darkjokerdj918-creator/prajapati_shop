@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prajapati Store – Admin Control Panel</title>
+  <meta name="description" content="Prajapati Store Admin Dashboard - Manage products, orders, and analytics">
+  <meta name="robots" content="noindex,nofollow">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/prajapati/admin/admin.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- ── LOADING OVERLAY ───────────────────────────────── -->
+  <div id="admin-loading" class="admin-loading">
+    <div class="loader-card">
+      <div class="loader-logo">Prajapati <span>Admin</span></div>
+      <div class="loader-bar"></div>
+    </div>
+  </div>
+
+  <!-- ── TOAST CONTAINER ───────────────────────────────── -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- ── ADMIN LOGIN SCREEN ────────────────────────────── -->
+  <div id="admin-login-screen" class="admin-login-overlay" style="display:none;">
+    <div class="admin-login-card">
+      <div class="admin-login-header">
+        <div class="admin-login-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h2>Prajapati <span>Admin</span></h2>
+        <p>Enter your credentials to access the control panel</p>
+      </div>
+      <form id="admin-login-form">
+        <div class="login-form-group">
+          <label for="admin-email">Email Address</label>
+          <div class="login-input-wrapper">
+            <i class="fa-regular fa-envelope"></i>
+            <input type="email" id="admin-email" required placeholder="admin@example.com" autocomplete="email">
+          </div>
+        </div>
+        <div class="login-form-group">
+          <label for="admin-password">Password</label>
+          <div class="login-input-wrapper">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="admin-password" required placeholder="••••••••" autocomplete="current-password">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard
+        </button>
+      </form>
+      <a href="/" class="back-to-shop-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Shop
+      </a>
+    </div>
+  </div>
+
+  <!-- ── MAIN ADMIN LAYOUT ─────────────────────────────── -->
+  <div class="admin-container" style="display:none;">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo-row">
+          <div class="brand-logo-icon"><i class="fa-solid fa-store"></i></div>
+          <div>
+            <div class="brand-title">Prajapati</div>
+          </div>
+        </div>
+        <div class="brand-badge">Admin Panel</div>
+      </div>
+
+      <div class="admin-user-info">
+        <div class="admin-avatar"><i class="fa-solid fa-user-tie"></i></div>
+        <div class="admin-user-text">
+          <div class="admin-name" id="admin-user-name">Loading...</div>
+          <div class="admin-role">Store Manager</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <button class="menu-item active" data-tab="dashboard-tab">
+          <i class="fa-solid fa-chart-line"></i> <span>Dashboard</span>
+        </button>
+        <button class="menu-item" data-tab="products-tab">
+          <i class="fa-solid fa-boxes-stacked"></i> <span>Products</span>
+        </button>
+        <div class="sidebar-divider"></div>
+        <a href="/" class="menu-item">
+          <i class="fa-solid fa-store"></i> <span>View Shop</span>
+        </a>
+        <button class="menu-item logout-link" id="admin-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main-content">
+
+      <!-- Header -->
+      <header class="admin-header">
+        <div class="header-left">
+          <h1 id="page-title">Store Dashboard</h1>
+          <p id="page-subtitle">Welcome back! Here's what's happening in your store.</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" id="quick-add-btn" style="display:flex;">
+            <i class="fa-solid fa-plus"></i> Add Product
+          </button>
+        </div>
+      </header>
+
+      <!-- ── TAB: DASHBOARD ─────────────────────────────── -->
+      <section id="dashboard-tab" class="tab-panel active">
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon revenue"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div>
+              <div class="stat-label">Total Revenue</div>
+              <div class="stat-value" id="stat-revenue">₹0.00</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orders"><i class="fa-solid fa-shopping-bag"></i></div>
+            <div>
+              <div class="stat-label">Total Orders</div>
+              <div class="stat-value" id="stat-orders">0</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon aov"><i class="fa-solid fa-calculator"></i></div>
+            <div>
+              <div class="stat-label">Avg Order Value</div>
+              <div class="stat-value" id="stat-aov">₹0.00</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon products"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <div>
+              <div class="stat-label">Active Items</div>
+              <div class="stat-value" id="stat-products">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Middle Row: Chart + Low Stock -->
+        <div class="dashboard-middle-row">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-area"></i> Weekly Sales & Orders Trend</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-canvas-wrapper">
+                <canvas id="salesTrendChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-triangle-exclamation"></i> Low Stock Alerts</h3>
+            </div>
+            <div class="card-body" id="low-stock-list">
+              <div class="empty-state-sm"><i class="fa-solid fa-spinner fa-spin"></i><span>Loading...</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Row: Bestsellers + Slow Movers -->
+        <div class="dashboard-bottom-row">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-fire"></i> Top Selling Products</h3>
+            </div>
+            <div class="card-body" id="bestsellers-table">
+              <div class="empty-state-sm"><i class="fa-solid fa-spinner fa-spin"></i><span>Loading...</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-snooze"></i> Slow Moving Products</h3>
+            </div>
+            <div class="card-body" id="slowmovers-table">
+              <div class="empty-state-sm"><i class="fa-solid fa-spinner fa-spin"></i><span>Loading...</span></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── TAB: PRODUCTS ──────────────────────────────── -->
+      <section id="products-tab" class="tab-panel">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="product-search" placeholder="Search by name or ID…">
+          </div>
+          <div class="filters-group">
+            <select id="category-filter" class="filter-select">
+              <option value="">All Categories</option>
+              <option value="ganesha">Ganesha</option>
+              <option value="household">Household</option>
+            </select>
+            <select id="stock-filter" class="filter-select">
+              <option value="">All Stock</option>
+              <option value="in_stock">In Stock</option>
+              <option value="low_stock">Low Stock</option>
+              <option value="out_of_stock">Out of Stock</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="products-table-card">
+          <div class="table-header">
+            <h3><i class="fa-solid fa-table-list" style="color:#C1440E;margin-right:8px;"></i>All Products</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width:60px;">Image</th>
+                  <th>ID</th>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-body">
+                <tr>
+                  <td colspan="8" class="empty-table-cell">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem;color:#ddd;"></i><br>
+                    Loading products...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ── PRODUCT ADD/EDIT MODAL ────────────────────────── -->
+  <div id="product-modal" class="admin-modal-overlay">
+    <div class="product-form-modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Add New Product</h2>
+        <button class="close-btn" id="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="product-form">
+        <div class="modal-body">
+          <div class="form-grid">
+            <!-- Row 1: ID & Name -->
+            <div class="form-group">
+              <label for="prod-id">Product ID <span class="required">*</span></label>
+              <input type="text" id="prod-id" required placeholder="e.g. g15, h22">
+              <small class="form-help">Unique alphanumeric identifier</small>
+            </div>
+            <div class="form-group">
+              <label for="prod-name">Product Name <span class="required">*</span></label>
+              <input type="text" id="prod-name" required placeholder="e.g. Classic Clay Pot">
+            </div>
+
+            <!-- Row 2: Category & Subcategory -->
+            <div class="form-group">
+              <label for="prod-category">Category <span class="required">*</span></label>
+              <select id="prod-category" required>
+                <option value="ganesha">Ganesha</option>
+                <option value="household">Household</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="prod-subcat">Subcategory <span class="required">*</span></label>
+              <input type="text" id="prod-subcat" required placeholder="e.g. Large, Crockery, Mugs">
+            </div>
+
+            <!-- Row 3: Prices -->
+            <div class="form-group">
+              <label for="prod-price">Sale Price (₹) <span class="required">*</span></label>
+              <input type="number" id="prod-price" required min="1" step="0.01" placeholder="499.00">
+            </div>
+            <div class="form-group">
+              <label for="prod-original-price">Original Price (₹)</label>
+              <input type="number" id="prod-original-price" min="0" step="0.01" placeholder="799.00">
+            </div>
+
+            <!-- Row 4: Stock & Emoji -->
+            <div class="form-group">
+              <label for="prod-stock">Stock Quantity <span class="required">*</span></label>
+              <input type="number" id="prod-stock" required min="0" placeholder="100">
+            </div>
+            <div class="form-group">
+              <label for="prod-emoji">Emoji</label>
+              <input type="text" id="prod-emoji" placeholder="🏺" value="🏺">
+            </div>
+
+            <!-- Row 5: Description (full width) -->
+            <div class="form-group col-span-2">
+              <label for="prod-description">Description</label>
+              <textarea id="prod-description" rows="3" placeholder="Brief product description..."></textarea>
+            </div>
+
+            <!-- Row 6: Features (full width) -->
+            <div class="form-group col-span-2">
+              <label for="prod-features">Features <small style="font-weight:400;text-transform:none;">(comma separated)</small></label>
+              <input type="text" id="prod-features" placeholder="100% Eco-Friendly, Handcrafted, Biodegradable">
+            </div>
+
+            <!-- Row 7: Image (full width) -->
+            <div class="form-group col-span-2 image-field-group">
+              <label>Product Image</label>
+              <div class="image-source-toggle">
+                <button type="button" class="btn-toggle active" id="btn-toggle-upload"><i class="fa-solid fa-upload"></i> Upload File</button>
+                <button type="button" class="btn-toggle" id="btn-toggle-url"><i class="fa-solid fa-link"></i> Image URL</button>
+              </div>
+
+              <!-- Upload -->
+              <div id="upload-container">
+                <div class="upload-dropzone" id="dropzone">
+                  <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                  <p>Drag & drop an image or <span>browse files</span></p>
+                  <input type="file" id="prod-image-file" accept="image/*" style="display:none;">
+                </div>
+                <div class="upload-progress" id="upload-progress">
+                  <div class="progress-bar"></div>
+                </div>
+              </div>
+
+              <!-- URL Input -->
+              <div id="url-container" style="display:none;">
+                <input type="text" id="prod-image-url" placeholder="https://... or images/photo.jpg">
+              </div>
+
+              <!-- Preview -->
+              <div class="image-preview-box" id="image-preview">
+                <img src="" alt="Preview">
+                <span class="preview-label">Image preview</span>
+                <button type="button" class="remove-img-btn" id="btn-remove-image">
+                  <i class="fa-solid fa-trash"></i> Remove
+                </button>
+              </div>
+
+              <!-- Hidden path store -->
+              <input type="hidden" id="prod-image-path">
+            </div>
+          </div>
+        </div><!-- /.modal-body -->
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-modal">
+            <i class="fa-solid fa-xmark"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" id="btn-save-product">
+            <i class="fa-solid fa-floppy-disk"></i> Save Product
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/prajapati/admin/admin.js"></script>
+</body>
+</html>
