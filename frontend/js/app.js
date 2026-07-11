@@ -108,10 +108,10 @@ async function loadGaneshaProducts() {
   if (!grid) return;
   setGridLoading(grid);
   try {
+    // Homepage: show only 3 newest products
     const res = await API.products.list({
       category: 'ganesha',
-      subcat: activeGaneshaFilter !== 'All' ? activeGaneshaFilter : undefined,
-      search: searchQuery || undefined,
+      limit: 3,
     });
     allProducts.ganesha = res.products || [];
     renderProductGrid(grid, allProducts.ganesha);
@@ -129,23 +129,13 @@ async function loadHouseholdProducts() {
   if (!grid) return;
   setGridLoading(grid);
   try {
+    // Homepage: show only 3 newest products
     const res = await API.products.list({
       category: 'household',
-      subcat: activeHouseholdFilter !== 'All' ? activeHouseholdFilter : undefined,
-      search: searchQuery || undefined,
+      limit: 3,
     });
-    let products = res.products || [];
-    // Apply client-side sorting
-    if (listingSort === 'price-asc') products.sort((a,b) => (a.price||0) - (b.price||0));
-    else if (listingSort === 'price-desc') products.sort((a,b) => (b.price||0) - (a.price||0));
-    else if (listingSort === 'rating') products.sort((a,b) => (b.rating||0) - (a.rating||0));
-    allProducts.household = products;
+    allProducts.household = res.products || [];
     renderProductGrid(grid, allProducts.household);
-    // Apply view class
-    const hg = document.getElementById('household-grid');
-    if (hg) {
-      hg.classList.toggle('list-view', listingView === 'list');
-    }
   } catch (err) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--gray-400);">
       <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;display:block;margin-bottom:0.8rem;"></i>

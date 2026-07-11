@@ -96,6 +96,16 @@ if os.path.isdir(FRONTEND_DIR):
     async def serve_profile():
         return FileResponse(os.path.join(FRONTEND_DIR, "pages", "profile.html"))
 
+    @app.get("/ganesha", include_in_schema=False)
+    @app.get("/ganesha.html", include_in_schema=False)
+    async def serve_ganesha():
+        return FileResponse(os.path.join(FRONTEND_DIR, "pages", "ganesha.html"))
+
+    @app.get("/household", include_in_schema=False)
+    @app.get("/household.html", include_in_schema=False)
+    async def serve_household():
+        return FileResponse(os.path.join(FRONTEND_DIR, "pages", "household.html"))
+
 # ── Health check ───────────────────────────────────────────
 @app.get("/health", tags=["System"])
 async def health():
