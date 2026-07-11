@@ -159,16 +159,26 @@
           <span class="eco-pill"><i class="fa-solid fa-hand-holding-heart"></i> Artisan Handcrafted</span>
         </div>
 
-        <!-- Filters -->
-        <div class="filter-bar" id="ganesha-filters" role="group" aria-label="Filter Ganesha">
-          <button class="filter-btn active" data-filter="All" id="gf-all">All</button>
-          <button class="filter-btn" data-filter="Small" id="gf-small">Small</button>
-          <button class="filter-btn" data-filter="Medium" id="gf-medium">Medium</button>
-          <button class="filter-btn" data-filter="Large" id="gf-large">Large</button>
+        <!-- Newly Arrived Label + View All -->
+        <div class="section-preview-bar reveal">
+          <div class="preview-label">
+            <i class="fa-solid fa-star" style="color:var(--gold);"></i>
+            <span>Newly Arrived</span>
+          </div>
+          <a href="/ganesha" class="view-all-btn" id="view-all-ganesha">
+            View All <i class="fa-solid fa-arrow-right"></i>
+          </a>
         </div>
 
-        <!-- Product Grid -->
+        <!-- Product Grid (max 3 newest) -->
         <div class="product-grid" id="ganesha-grid" aria-label="Ganesha products"></div>
+
+        <!-- Bottom View All -->
+        <div style="text-align:center;margin-top:2rem;">
+          <a href="/ganesha" class="btn-primary" id="view-all-ganesha-bottom">
+            <i class="fa-solid fa-store"></i> See Full Ganesha Collection
+          </a>
+        </div>
       </div>
     </section>
 
@@ -210,42 +220,26 @@
           </p>
         </div>
 
-        <div class="list-controls-bar">
-          <div class="view-toggle-group">
-            <button id="view-grid" class="view-toggle-btn" aria-pressed="false" aria-label="Grid View">
-              <i class="fa-solid fa-table-cells-large"></i>
-            </button>
-            <button id="view-list" class="view-toggle-btn" aria-pressed="true" aria-label="List View">
-              <i class="fa-solid fa-list"></i>
-            </button>
+        <!-- Newly Arrived Label + View All -->
+        <div class="section-preview-bar reveal">
+          <div class="preview-label">
+            <i class="fa-solid fa-star" style="color:var(--gold);"></i>
+            <span>Newly Arrived</span>
           </div>
-          <div class="sort-group">
-            <label for="sort-select" class="sort-label"><i class="fa-solid fa-arrow-down-wide-short"></i> Sort By:</label>
-            <select id="sort-select" aria-label="Sort products">
-              <option value="relevance">Relevance</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="rating">Top Rated</option>
-            </select>
-          </div>
+          <a href="/household" class="view-all-btn" id="view-all-household">
+            View All <i class="fa-solid fa-arrow-right"></i>
+          </a>
         </div>
 
-        <!-- Filters -->
-        <div class="filter-bar" id="household-filters" role="group" aria-label="Filter household">
-          <button class="filter-btn active" data-filter="All" id="hf-all">All</button>
-          <button class="filter-btn" data-filter="Pots" id="hf-pots">🏺 Matkas & Pots</button>
-          <button class="filter-btn" data-filter="Mugs" id="hf-mugs">☕ Mugs</button>
-          <button class="filter-btn" data-filter="Glass" id="hf-glass">🍵 Glasses / Kulhads</button>
-          <button class="filter-btn" data-filter="Plates" id="hf-plates">🍽️ Dinner Sets</button>
-          <button class="filter-btn" data-filter="Cookware" id="hf-cookware">🍳 Cookware & Kadais</button>
-          <button class="filter-btn" data-filter="Bowls" id="hf-bowls">🥣 Bowls</button>
-          <button class="filter-btn" data-filter="Vases" id="hf-vases">🌿 Vases</button>
-          <button class="filter-btn" data-filter="Diyas" id="hf-diyas">🪔 Diyas</button>
-          <button class="filter-btn" data-filter="Decorative" id="hf-decorative">🎨 Decorative items</button>
-        </div>
-
-        <!-- Product Grid -->
+        <!-- Product Grid (max 3 newest) -->
         <div class="product-grid" id="household-grid" aria-label="Household products"></div>
+
+        <!-- Bottom View All -->
+        <div style="text-align:center;margin-top:2rem;">
+          <a href="/household" class="btn-secondary" id="view-all-household-bottom">
+            <i class="fa-solid fa-store"></i> See Full Pottery Collection
+          </a>
+        </div>
       </div>
     </section>
 
