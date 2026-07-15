@@ -1,6 +1,5 @@
 """
-Seed the SQLite database with all product data.
-Run once: python -m app.seed_data
+Seed the database. Set PRODUCTS to empty to allow the user to insert real products.
 """
 from app.core.database import SessionLocal, create_tables
 

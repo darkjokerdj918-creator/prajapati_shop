@@ -10,7 +10,7 @@ class Product(Base):
     name = Column(String(200), nullable=False)
     category = Column(String(50), nullable=False, index=True)   # ganesha | household
     subcat = Column(String(50), nullable=False, index=True)      # Small | Medium | Mugs | Bowls…
-    price = Column(Float, nullable=False)
+    price = Column(Float, nullable=True)
     original_price = Column(Float, nullable=True)
     rating = Column(Float, default=4.5)
     reviews = Column(Integer, default=0)
