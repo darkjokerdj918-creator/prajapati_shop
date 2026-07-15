@@ -240,6 +240,10 @@ function renderProductCard(p) {
         <div class="product-details-wrap">
           <div class="product-category">${p.category === 'ganesha' ? '🪷 Eco Ganesha' : '🏠 Household'} · ${p.subcat}</div>
           <h3 class="product-name"><a href="pages/product.html?id=${p.id}" class="product-link">${p.name}</a></h3>
+          <div class="product-rating">
+            <div class="stars">${renderStars(p.rating)}</div>
+            <span class="rating-count">${p.rating} (${p.reviews})</span>
+          </div>
           <p class="product-desc-short">${p.description || ''}</p>
         </div>
         <div class="product-price-row">
@@ -628,7 +632,7 @@ async function fetchAndRenderWishlist() {
     const html = wishlistProducts.map(p => `
       <div class="cart-item" data-wishlist-id="${p.id}">
         <div class="cart-item-img">
-          ${p.image ? `<img src="${p.image.split(',')[0].trim()}" alt="${p.name}" />` : `<div class="cart-item-emoji">${p.emoji}</div>`}
+          ${p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<div class="cart-item-emoji">${p.emoji}</div>`}
         </div>
         <div class="cart-item-info">
           <div class="cart-item-name" style="cursor:pointer;font-weight:700;" onclick="openProductModalFromWishlist('${p.id}')">${p.name}</div>

@@ -115,7 +115,7 @@
             <option value="relevance">Relevance</option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
-
+            <option value="rating">Top Rated</option>
           </select>
         </div>
       </div>
@@ -244,7 +244,6 @@
     let activeFilter = 'All';
     let listingSort = 'relevance';
     let listingView = localStorage.getItem('ps_view') || 'grid';
-    let allProductsData = [];
 
     window.addEventListener('scroll', () => {
       document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 50);
@@ -296,7 +295,7 @@
       return `
         <div class="product-card reveal" data-id="${p.id}" role="article" tabindex="0" aria-label="${p.name}">
           <div class="product-img-wrap">
-            ${p.image?`<img src="${p.image.split(',')[0].trim()}" alt="${p.name}" loading="lazy" />`:`<div class="product-folder"><div class="folder-icon">📁</div><div class="folder-gallery"><span></span><span></span><span></span></div><div class="folder-label">${p.name}</div></div>`}
+            ${p.image?`<img src="${p.image}" alt="${p.name}" loading="lazy" />`:`<div class="product-folder"><div class="folder-icon">📁</div><div class="folder-gallery"><span></span><span></span><span></span></div><div class="folder-label">${p.name}</div></div>`}
             ${p.badge?`<span class="product-badge ${bMap[p.badge]}">${bLbl[p.badge]}</span>`:''}
             <div class="product-actions" aria-hidden="true">
               <button class="action-btn wishlist-btn ${inWish?'wishlist-active':''}" data-id="${p.id}" title="Wishlist" aria-label="Wishlist ${p.name}"><i class="fa-${inWish?'solid':'regular'} fa-heart"></i></button>
@@ -307,16 +306,15 @@
             <div class="product-details-wrap">
               <div class="product-category">🏠 Household · ${p.subcat}</div>
               <h3 class="product-name"><a href="/pages/product.html?id=${p.id}" class="product-link">${p.name}</a></h3>
+              <div class="product-rating"><div class="stars">${renderStars(p.rating)}</div><span class="rating-count">${p.rating} (${p.reviews})</span></div>
               <p class="product-desc-short">${p.description||''}</p>
             </div>
             <div class="product-price-row">
               <div class="price-group">
-                ${p.price !== null && p.price !== undefined ? `<span class="price-current">₹${p.price.toLocaleString('en-IN')}</span>` : ''}
-                ${p.original_price && p.price !== null && p.price !== undefined ? `<span class="price-original">₹${p.original_price.toLocaleString('en-IN')}</span>` : ''}
+                <span class="price-current">₹${p.price.toLocaleString('en-IN')}</span>
+                ${p.original_price?`<span class="price-original">₹${p.original_price.toLocaleString('en-IN')}</span>`:''}
               </div>
-              ${p.price !== null && p.price !== undefined ? `
               <button class="add-to-cart-btn" data-id="${p.id}" data-name="${p.name}" aria-label="Add ${p.name} to cart"><i class="fa-solid fa-cart-plus"></i></button>
-              ` : ''}
             </div>
             ${disc>0?`<div class="discount-save-tag">Save ${disc}%</div>`:''}
           </div>
@@ -346,20 +344,13 @@
       const countEl=document.getElementById('cat-count');
       grid.innerHTML=`<div style="grid-column:1/-1;display:flex;justify-content:center;align-items:center;padding:4rem;gap:1rem;color:var(--gray-400);"><i class="fa-solid fa-spinner fa-spin" style="font-size:1.8rem;color:var(--terracotta);"></i><span>Loading products…</span></div>`;
       try {
-        if (allProductsData.length === 0) {
-          const res = await API.products.list({category:'household',limit:100});
-          allProductsData = res.products || [];
-          renderFilterButtons();
-        }
-
-        let products = [...allProductsData];
-        if (activeFilter !== 'All') {
-          products = products.filter(p => p.subcat === activeFilter);
-        }
-
+        const params={category:'household',limit:100};
+        if(activeFilter!=='All') params.subcat=activeFilter;
+        const res=await API.products.list(params);
+        let products=res.products||[];
         if(listingSort==='price-asc') products.sort((a,b)=>a.price-b.price);
         else if(listingSort==='price-desc') products.sort((a,b)=>b.price-a.price);
-
+        else if(listingSort==='rating') products.sort((a,b)=>b.rating-a.rating);
         if(countEl) countEl.textContent=`${products.length} product${products.length!==1?'s':''}`;
         if(!products.length){grid.innerHTML=`<div class="cat-empty"><i class="fa-solid fa-magnifying-glass"></i><h3>No products found</h3><p>Try a different filter.</p></div>`;return;}
         grid.innerHTML=products.map(renderProductCard).join('');
@@ -371,48 +362,15 @@
       }
     }
 
-    function renderFilterButtons() {
-      const filterContainer = document.getElementById('cat-filters');
-      if (!filterContainer) return;
-      filterContainer.innerHTML = '';
-
-      const subcats = [...new Set(allProductsData.map(p => p.subcat).filter(Boolean))];
-
-      const btnAll = document.createElement('button');
-      btnAll.className = `filter-btn ${activeFilter === 'All' ? 'active' : ''}`;
-      btnAll.dataset.filter = 'All';
-      btnAll.textContent = 'All';
-      filterContainer.appendChild(btnAll);
-
-      subcats.forEach(sub => {
-        let emoji = '🏺';
-        const subLower = sub.toLowerCase();
-        if (subLower.includes('pot') || subLower.includes('matka')) emoji = '🏺';
-        else if (subLower.includes('mug') || subLower.includes('cup') || subLower.includes('tea')) emoji = '☕';
-        else if (subLower.includes('glass') || subLower.includes('kulhad')) emoji = '🍵';
-        else if (subLower.includes('plate') || subLower.includes('dish') || subLower.includes('dinner')) emoji = '🍽️';
-        else if (subLower.includes('cook') || subLower.includes('kadai') || subLower.includes('tawa')) emoji = '🍳';
-        else if (subLower.includes('bowl')) emoji = '🥣';
-        else if (subLower.includes('vase') || subLower.includes('plant')) emoji = '🌿';
-        else if (subLower.includes('diya')) emoji = '🪔';
-        else if (subLower.includes('decor')) emoji = '🎨';
-
-        const btn = document.createElement('button');
-        btn.className = `filter-btn ${activeFilter === sub ? 'active' : ''}`;
-        btn.dataset.filter = sub;
-        btn.textContent = `${emoji} ${sub}`;
-        filterContainer.appendChild(btn);
+    // Filters
+    document.querySelectorAll('#cat-filters .filter-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('#cat-filters .filter-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter=btn.dataset.filter;
+        loadProducts();
       });
-
-      filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          activeFilter = btn.dataset.filter;
-          loadProducts();
-        });
-      });
-    }
+    });
 
     // Sort
     document.getElementById('sort-select')?.addEventListener('change',e=>{listingSort=e.target.value;loadProducts();});
@@ -453,30 +411,17 @@
       modal.querySelector('.modal-main-img').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--terracotta);"></i></div>';
       try{
         const res=await API.products.get(id);const p=res.product;modalProduct=p;modalQty=1;
-         const inWish=wishlist.includes(p.id);const disc=(p.price && p.original_price)?Math.round((1-p.price/p.original_price)*100):0;
-         modal.querySelector('.modal-category').textContent=`🏠 Household · ${p.subcat}`;
-         modal.querySelector('.modal-name').textContent=p.name;
-         
-         // Hide ratings
-         const ratingEl = modal.querySelector('.modal-rating');
-         if (ratingEl) ratingEl.style.display = 'none';
-
-         if (p.price !== null && p.price !== undefined) {
-           modal.querySelector('.modal-price-current').textContent=`₹${p.price.toLocaleString('en-IN')}`;
-           modal.querySelector('.modal-price-original').textContent=p.original_price?`₹${p.original_price.toLocaleString('en-IN')}`:'' ;
-           modal.querySelector('.modal-discount').textContent=disc>0?`Save ${disc}%`:'';
-           modal.querySelector('.modal-qty-row').style.display = '';
-           modal.querySelector('.modal-add-cart').style.display = '';
-         } else {
-           modal.querySelector('.modal-price-current').textContent='No Price';
-           modal.querySelector('.modal-price-original').textContent='';
-           modal.querySelector('.modal-discount').textContent='';
-           modal.querySelector('.modal-qty-row').style.display = 'none';
-           modal.querySelector('.modal-add-cart').style.display = 'none';
-         }
+        const inWish=wishlist.includes(p.id);const disc=p.original_price?Math.round((1-p.price/p.original_price)*100):0;
+        modal.querySelector('.modal-category').textContent=`🏠 Household · ${p.subcat}`;
+        modal.querySelector('.modal-name').textContent=p.name;
+        modal.querySelector('.modal-stars').innerHTML=renderStars(p.rating);
+        modal.querySelector('.modal-rating-text').textContent=`${p.rating} · ${p.reviews} reviews`;
+        modal.querySelector('.modal-price-current').textContent=`₹${p.price.toLocaleString('en-IN')}`;
+        modal.querySelector('.modal-price-original').textContent=p.original_price?`₹${p.original_price.toLocaleString('en-IN')}`:'' ;
+        modal.querySelector('.modal-discount').textContent=disc>0?`Save ${disc}%`:'';
         modal.querySelector('.modal-desc').textContent=p.description||'';
         modal.querySelector('.modal-qty-num').textContent=1;
-        modal.querySelector('.modal-main-img').innerHTML=p.image?`<img src="${p.image.split(',')[0].trim()}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" />`:`<div class="modal-emoji">${p.emoji}</div>`;
+        modal.querySelector('.modal-main-img').innerHTML=p.image?`<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" />`:`<div class="modal-emoji">${p.emoji}</div>`;
         const featEl=modal.querySelector('.modal-features');
         if(featEl) featEl.innerHTML=(p.features||[]).map(f=>`<span class="modal-feature-tag">✓ ${f}</span>`).join('');
         const wishBtn=modal.querySelector('.modal-wishlist-btn');

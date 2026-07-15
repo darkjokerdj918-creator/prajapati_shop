@@ -42,9 +42,9 @@ class AdminProductCreate(BaseModel):
     name: str
     category: str
     subcat: str
-    price: Optional[float] = None
+    price: float
     original_price: Optional[float] = None
-    rating: Optional[float] = None
+    rating: float = 4.5
     reviews: int = 0
     badge: Optional[str] = None
     image: Optional[str] = None
