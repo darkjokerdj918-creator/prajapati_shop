@@ -8,9 +8,9 @@ class ProductBase(BaseModel):
     name: str
     category: str
     subcat: str
-    price: float
+    price: Optional[float] = None
     original_price: Optional[float] = None
-    rating: float = 4.5
+    rating: Optional[float] = None
     reviews: int = 0
     badge: Optional[str] = None
     image: Optional[str] = None

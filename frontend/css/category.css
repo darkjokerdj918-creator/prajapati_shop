@@ -1,0 +1,151 @@
+/* ============================================================
+   CATEGORY PAGE STYLES — Prajapati Store
+   ============================================================ */
+
+/* Hero banner */
+.cat-hero {
+  background: linear-gradient(135deg, #1a0e08 0%, #2C1810 50%, #1a0e08 100%);
+  padding: 6rem 0 3.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cat-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(193,68,14,0.18) 0%, transparent 70%);
+}
+.cat-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.cat-hero-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--terracotta-light);
+  margin-bottom: 1rem;
+}
+.cat-hero-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #fff;
+  margin-bottom: 1rem;
+  line-height: 1.15;
+}
+.cat-hero-title em {
+  color: var(--terracotta-light);
+  font-style: italic;
+}
+.cat-hero-desc {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.cat-breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  margin-top: 1rem;
+}
+.cat-breadcrumb a {
+  color: var(--terracotta-light);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.cat-breadcrumb a:hover { color: #fff; }
+
+/* Eco badge strip */
+.cat-eco-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+/* Spacer to clear fixed navbar */
+.cat-nav-spacer { height: 75px; }
+
+/* Main content area */
+.cat-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* Toolbar: filters left, controls right */
+.cat-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.8rem;
+  background: #fff;
+  border: 1px solid #ebdcd0;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(139,37,0,0.06);
+}
+.cat-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+.cat-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Product count badge */
+.cat-count {
+  font-size: 0.82rem;
+  color: var(--gray-600);
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 6px 14px;
+  background: var(--gray-100);
+  border-radius: 20px;
+}
+
+/* Empty state */
+.cat-empty {
+  text-align: center;
+  padding: 5rem 2rem;
+  color: var(--gray-400);
+  grid-column: 1/-1;
+}
+.cat-empty i {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--terracotta);
+  opacity: 0.3;
+}
+.cat-empty h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--charcoal);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cat-hero { padding: 5rem 0 2.5rem; }
+  .cat-toolbar { flex-direction: column; }
+  .cat-right-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+}

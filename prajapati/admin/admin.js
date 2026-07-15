@@ -22,6 +22,7 @@ async function adminFetch(path, options = {}) {
 let allProducts = [];
 let editingProductId = null;
 let salesChart = null;
+let currentProductImages = [];
 
 // ── Initialize App ────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -253,7 +254,34 @@ function renderSalesTrendChart(salesTrend) {
 async function loadProductsList() {
   const products = await adminFetch('/admin/products');
   allProducts = products;
+  populateDatalists();
   filterAndRenderProducts();
+}
+
+function populateDatalists() {
+  const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+  const defaultSubcats = ['Small', 'Medium', 'Large', '10cm', '15cm', '20cm', '30cm'];
+  const subcats = [...new Set([...defaultSubcats, ...allProducts.map(p => p.subcat).filter(Boolean)])];
+
+  const catList = document.getElementById('category-list');
+  if (catList) {
+    catList.innerHTML = '';
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      catList.appendChild(opt);
+    });
+  }
+
+  const subcatList = document.getElementById('subcat-list');
+  if (subcatList) {
+    subcatList.innerHTML = '';
+    subcats.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s;
+      subcatList.appendChild(opt);
+    });
+  }
 }
 
 function filterAndRenderProducts() {
@@ -287,7 +315,7 @@ function filterAndRenderProducts() {
       <tr>
         <td>
           ${p.image
-            ? `<img src="/${p.image}" class="tbl-product-img" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+            ? `<img src="/${p.image.split(',')[0].trim()}" class="tbl-product-img" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
             : ''}
           <div class="tbl-product-emoji" style="${p.image ? 'display:none' : ''}">${p.emoji || '🏺'}</div>
         </td>
@@ -295,7 +323,7 @@ function filterAndRenderProducts() {
         <td><span class="product-title">${p.name}</span><br><small class="product-subcat">${p.subcat}</small></td>
         <td><span class="category-chip cat-${p.category}">${p.category}</span></td>
         <td>
-          <strong class="price-text">₹${p.price.toFixed(2)}</strong>
+          <strong class="price-text">${p.price !== null && p.price !== undefined ? `₹${p.price.toFixed(2)}` : 'No Price'}</strong>
           ${p.original_price ? `<br><s class="original-price">₹${p.original_price.toFixed(2)}</s>` : ''}
         </td>
         <td>
@@ -334,8 +362,9 @@ function openProductModal(productId = null) {
 
   form.reset();
   editingProductId = productId;
-  document.getElementById('image-preview').style.display = 'none';
   document.getElementById('prod-image-path').value = '';
+  currentProductImages = [];
+  renderImagePreviews();
   toggleImageTab('upload');
 
   if (productId) {
@@ -354,10 +383,8 @@ function openProductModal(productId = null) {
       document.getElementById('prod-description').value    = p.description || '';
       document.getElementById('prod-features').value       = Array.isArray(p.features) ? p.features.join(', ') : (p.features || '');
       if (p.image) {
-        document.getElementById('prod-image-path').value = p.image;
-        const preview = document.getElementById('image-preview');
-        preview.style.display = 'flex';
-        preview.querySelector('img').src = '/' + p.image;
+        currentProductImages = p.image.split(',').map(s => s.trim()).filter(Boolean);
+        renderImagePreviews();
       }
     }
   } else {
@@ -395,7 +422,9 @@ function initProductForm() {
       name:           document.getElementById('prod-name').value.trim(),
       category:       document.getElementById('prod-category').value,
       subcat:         document.getElementById('prod-subcat').value.trim(),
-      price:          parseFloat(document.getElementById('prod-price').value),
+      price:          document.getElementById('prod-price').value
+                        ? parseFloat(document.getElementById('prod-price').value)
+                        : null,
       original_price: document.getElementById('prod-original-price').value
                         ? parseFloat(document.getElementById('prod-original-price').value)
                         : null,
@@ -491,6 +520,36 @@ function showConfirmDialog(title, message, onConfirm) {
 }
 
 // ── Image Upload ──────────────────────────────────────────
+function renderImagePreviews() {
+  const container = document.getElementById('image-previews-container');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  currentProductImages.forEach((img, idx) => {
+    const src = img.startsWith('http') || img.startsWith('/') ? img : '/' + img;
+    const box = document.createElement('div');
+    box.className = 'image-preview-box';
+    box.style.display = 'flex';
+    box.style.position = 'relative';
+    box.style.margin = '5px';
+    box.innerHTML = `
+      <img src="${src}" alt="Preview" style="width:90px;height:90px;object-fit:cover;border-radius:6px;border:1px solid #ddd;">
+      <span class="preview-label" style="font-size:0.65rem;position:absolute;bottom:0;background:rgba(0,0,0,0.65);color:white;width:100%;text-align:center;border-radius:0 0 6px 6px;padding:2px 0;">Img ${idx + 1}</span>
+      <button type="button" class="remove-img-btn" onclick="removeProductImage(${idx})" style="position:absolute;top:-8px;right:-8px;background:var(--terracotta);color:white;border:none;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.75rem;box-shadow:0 1px 4px rgba(0,0,0,0.2); border: none;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    `;
+    container.appendChild(box);
+  });
+  
+  document.getElementById('prod-image-path').value = currentProductImages.join(',');
+}
+
+window.removeProductImage = function(index) {
+  currentProductImages.splice(index, 1);
+  renderImagePreviews();
+};
+
 function initImageHandlers() {
   const toggleUpload = document.getElementById('btn-toggle-upload');
   const toggleUrl    = document.getElementById('btn-toggle-url');
@@ -499,23 +558,26 @@ function initImageHandlers() {
   toggleUrl.addEventListener('click',   () => toggleImageTab('url'));
 
   const urlInput = document.getElementById('prod-image-url');
-  urlInput.addEventListener('input', () => {
-    const val = urlInput.value.trim();
-    document.getElementById('prod-image-path').value = val;
-    const preview = document.getElementById('image-preview');
-    if (val) {
-      preview.style.display = 'flex';
-      preview.querySelector('img').src = val.startsWith('http') || val.startsWith('/') ? val : '/' + val;
-    } else {
-      preview.style.display = 'none';
-    }
-  });
+  const addUrlBtn = document.getElementById('btn-add-image-url');
 
-  document.getElementById('btn-remove-image').addEventListener('click', () => {
-    document.getElementById('prod-image-path').value = '';
-    document.getElementById('prod-image-url').value  = '';
-    document.getElementById('image-preview').style.display = 'none';
-    document.getElementById('prod-image-file').value = '';
+  const addUrlImage = () => {
+    const val = urlInput.value.trim();
+    if (val) {
+      currentProductImages.push(val);
+      renderImagePreviews();
+      urlInput.value = '';
+      showToast('Image URL added!', 'success');
+    } else {
+      showToast('Please enter an image URL', 'error');
+    }
+  };
+
+  addUrlBtn.addEventListener('click', addUrlImage);
+  urlInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addUrlImage();
+    }
   });
 
   const dropzone  = document.getElementById('dropzone');
@@ -560,10 +622,8 @@ async function handleImageUpload(file) {
     try { resData = await res.json(); } catch { resData = {}; }
     if (!res.ok) throw new Error(resData?.detail || 'Image upload failed');
 
-    document.getElementById('prod-image-path').value = resData.image_path;
-    const preview = document.getElementById('image-preview');
-    preview.style.display = 'flex';
-    preview.querySelector('img').src = '/' + resData.image_path;
+    currentProductImages.push(resData.image_path);
+    renderImagePreviews();
     showToast('Image uploaded successfully!', 'success');
   } catch (err) {
     showToast(err.message, 'error');

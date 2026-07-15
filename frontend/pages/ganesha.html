@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eco Ganesha Collection — Prajapati Store</title>
+  <meta name="description" content="Shop our complete collection of handcrafted eco-friendly Ganesha idols. Biodegradable clay, natural pigments, artisan made." />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/category.css" />
+</head>
+<body>
+
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- NAVBAR -->
+  <header>
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+      <a href="/" class="nav-logo" aria-label="Prajapati Store Home">
+        <span class="logo-main">Prajapati Store</span>
+        <span class="logo-sub">Handcrafted with Love</span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/">Home</a></li>
+        <li><a href="/ganesha" class="active">🪷 Eco Ganesha</a></li>
+        <li><a href="/household">🏺 Household</a></li>
+        <li><a href="/#about-section">Our Story</a></li>
+        <li><a href="/#newsletter">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="/login" class="nav-icon-btn" id="auth-nav-btn" title="Login / Register" aria-label="Login">
+          <i class="fa-regular fa-user"></i>
+        </a>
+        <a href="/profile" class="nav-icon-btn" id="user-nav-btn" title="My Profile" aria-label="My profile" style="display:none;gap:4px;font-size:.78rem;font-weight:700;width:auto;padding:0 12px;border-radius:50px;background:rgba(193,68,14,.1);color:var(--terracotta-dark);">
+          <i class="fa-solid fa-user-circle" style="font-size:1rem;"></i>
+          <span id="user-nav-name"></span>
+        </a>
+        <a href="/orders" class="nav-icon-btn" title="My Orders" aria-label="My orders" style="display:none;" id="orders-nav-btn">
+          <i class="fa-solid fa-box"></i>
+        </a>
+        <button class="nav-icon-btn" id="logout-nav-btn" title="Logout" aria-label="Logout" style="display:none;">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+        <button class="nav-icon-btn" id="wishlist-nav-btn" aria-label="My Wishlist" title="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          <span class="cart-badge hidden" id="wishlist-badge" style="background:var(--terracotta);">0</span>
+        </button>
+        <button class="nav-icon-btn" id="cart-btn" aria-label="Shopping Cart" title="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge hidden" id="cart-badge">0</span>
+        </button>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+    <div id="mobile-menu" class="mobile-menu" role="dialog" aria-label="Mobile navigation">
+      <a href="/">🏠 Home</a>
+      <a href="/ganesha">🪷 Eco-Friendly Ganesha</a>
+      <a href="/household">🏺 Household Items</a>
+      <a href="/#about-section">🌿 Our Story</a>
+      <a href="/login" id="mobile-auth-link">👤 Login / Register</a>
+      <a href="/orders" id="mobile-orders-link" style="display:none;">📦 My Orders</a>
+    </div>
+  </header>
+
+  <div class="cat-nav-spacer"></div>
+
+  <!-- HERO -->
+  <div class="cat-hero">
+    <div class="cat-hero-content">
+      <div class="cat-hero-eyebrow">Spiritual &amp; Sustainable</div>
+      <h1 class="cat-hero-title">🪷 Eco-Friendly <em>Ganesha</em> Collection</h1>
+      <p class="cat-hero-desc">
+        Celebrate with a conscience. Our Ganesha idols are handcrafted from 100% natural, biodegradable clay — safe for immersion, gentle on the planet.
+      </p>
+      <nav class="cat-breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i>
+        <span>Eco Ganesha</span>
+      </nav>
+      <div class="cat-eco-strip">
+        <span class="eco-pill"><i class="fa-solid fa-leaf"></i> 100% Biodegradable</span>
+        <span class="eco-pill"><i class="fa-solid fa-droplet"></i> Safe for Immersion</span>
+        <span class="eco-pill"><i class="fa-solid fa-palette"></i> Natural Pigments</span>
+        <span class="eco-pill"><i class="fa-solid fa-recycle"></i> Zero Plastic</span>
+        <span class="eco-pill"><i class="fa-solid fa-hand-holding-heart"></i> Artisan Handcrafted</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main class="cat-main">
+    <div class="cat-toolbar">
+      <div class="cat-filters" id="cat-filters" role="group" aria-label="Filter Ganesha">
+        <button class="filter-btn active" data-filter="All">All</button>
+        <button class="filter-btn" data-filter="Small">Small</button>
+        <button class="filter-btn" data-filter="Medium">Medium</button>
+        <button class="filter-btn" data-filter="Large">Large</button>
+      </div>
+      <div class="cat-right-controls">
+        <span class="cat-count" id="cat-count">Loading…</span>
+      </div>
+    </div>
+    <div class="product-grid" id="cat-grid" aria-label="Ganesha products"></div>
+  </main>
+
+  <!-- WISHLIST SIDEBAR -->
+  <div id="wishlist-overlay" class="cart-overlay" aria-hidden="true"></div>
+  <aside id="wishlist-sidebar" class="cart-sidebar" role="dialog" aria-modal="true" aria-label="My Wishlist">
+    <div class="cart-header">
+      <h3>
+        <i class="fa-solid fa-heart" style="color:var(--terracotta);margin-right:8px;"></i>
+        My Wishlist
+        <span class="cart-count-label" id="wishlist-count-label">0 items</span>
+      </h3>
+      <button class="cart-close-btn" id="wishlist-close-btn" aria-label="Close wishlist">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="cart-items" id="wishlist-items">
+      <div class="cart-empty" id="wishlist-empty" style="display:flex;">
+        <i class="fa-solid fa-heart"></i>
+        <h4>Your wishlist is empty</h4>
+        <p>Save your favorite items here!</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CART SIDEBAR -->
+  <div id="cart-overlay" class="cart-overlay" aria-hidden="true"></div>
+  <aside id="cart-sidebar" class="cart-sidebar" role="dialog" aria-modal="true" aria-label="Shopping Cart">
+    <div class="cart-header">
+      <h3>
+        <i class="fa-solid fa-bag-shopping" style="color:var(--terracotta);margin-right:8px;"></i>
+        Your Cart
+        <span class="cart-count-label" id="cart-count-label">0 items</span>
+      </h3>
+      <button class="cart-close-btn" id="cart-close-btn" aria-label="Close cart">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <div class="cart-empty" id="cart-empty" style="display:flex;">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <h4>Your cart is empty</h4>
+        <p>Add some beautiful pottery to get started!</p>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-subtotal">
+        <span>Subtotal</span>
+        <span class="cart-subtotal-amount" id="cart-subtotal">₹0</span>
+      </div>
+      <div class="cart-subtotal" style="margin-bottom:0;">
+        <span style="font-size:.8rem;color:var(--sage-dark);"><i class="fa-solid fa-truck"></i> Shipping</span>
+        <span style="font-size:.82rem;font-weight:700;color:var(--sage-dark);" id="cart-shipping">₹99</span>
+      </div>
+      <div class="cart-total">
+        <span>Total</span>
+        <span class="cart-total-amount" id="cart-total">₹0</span>
+      </div>
+      <button class="checkout-btn" id="checkout-btn">
+        <i class="fa-solid fa-lock"></i> Secure Checkout
+      </button>
+      <span class="continue-shopping" id="continue-shopping" role="button" tabindex="0">
+        ← Continue Shopping
+      </span>
+    </div>
+  </aside>
+
+  <!-- PRODUCT MODAL -->
+  <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Product details">
+    <div id="product-modal" class="product-modal">
+      <div class="modal-gallery">
+        <div class="modal-main-img"><!-- JS populated --></div>
+        <button class="modal-close" id="modal-close-btn" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-info">
+        <div class="modal-category"></div>
+        <h2 class="modal-name"></h2>
+        <div class="modal-rating">
+          <div class="stars modal-stars"></div>
+          <span class="rating-count modal-rating-text"></span>
+        </div>
+        <div class="modal-price">
+          <span class="modal-price-current"></span>
+          <span class="modal-price-original"></span>
+          <span class="modal-discount" style="font-size:.78rem;color:var(--sage-dark);font-weight:700;"></span>
+        </div>
+        <p class="modal-desc"></p>
+        <div class="modal-features"></div>
+        <div class="modal-qty-row">
+          <span class="modal-qty-label">Qty:</span>
+          <div class="modal-qty-ctrl">
+            <button class="modal-qty-btn modal-qty-minus" aria-label="Decrease">−</button>
+            <span class="modal-qty-num">1</span>
+            <button class="modal-qty-btn modal-qty-plus" aria-label="Increase">+</button>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-add-cart" id="modal-add-cart-btn">
+            <i class="fa-solid fa-cart-plus"></i> Add to Cart
+          </button>
+          <button class="modal-wishlist-btn" id="modal-wishlist-btn" aria-label="Wishlist">
+            <i class="fa-regular fa-heart"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button id="back-to-top" title="Back to top" aria-label="Back to top">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <script src="../js/api.js?v=2.0"></script>
+  <script src="../js/cart.js?v=2.0"></script>
+  <script src="../js/auth.js?v=2.0"></script>
+  <script>
+    // ── State ──
+    let wishlist = JSON.parse(localStorage.getItem('ps_wishlist') || '[]');
+    let modalProduct = null;
+    let modalQty = 1;
+    let activeFilter = 'All';
+    let allProductsData = [];
+
+    // ── Navbar scroll ──
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ── Hamburger ──
+    document.getElementById('hamburger')?.addEventListener('click', () => {
+      document.getElementById('hamburger').classList.toggle('open');
+      document.getElementById('mobile-menu').classList.toggle('open');
+    });
+
+    // ── Auth state ──
+    (function() {
+      const loggedIn = !!localStorage.getItem('ps_token');
+      const user = (() => { try { return JSON.parse(localStorage.getItem('ps_user')||'null'); } catch { return null; } })();
+      if (loggedIn && user) {
+        const ab = document.getElementById('auth-nav-btn'); if (ab) ab.style.display = 'none';
+        const ub = document.getElementById('user-nav-btn'); if (ub) ub.style.display = 'flex';
+        const un = document.getElementById('user-nav-name'); if (un) un.textContent = user.full_name?.split(' ')[0] || 'Account';
+        const ob = document.getElementById('orders-nav-btn'); if (ob) ob.style.display = 'flex';
+        const lb = document.getElementById('logout-nav-btn'); if (lb) lb.style.display = 'flex';
+        const ma = document.getElementById('mobile-auth-link'); if (ma) ma.style.display = 'none';
+        const mo = document.getElementById('mobile-orders-link'); if (mo) mo.style.display = 'block';
+      }
+      document.getElementById('logout-nav-btn')?.addEventListener('click', () => {
+        localStorage.removeItem('ps_token'); localStorage.removeItem('ps_user'); window.location.reload();
+      });
+    })();
+
+    // ── Helpers ──
+    function renderStars(r) {
+      const f = Math.floor(r), h = r % 1 >= 0.5, e = 5 - f - (h?1:0);
+      return '★'.repeat(f) + (h?'⯨':'') + '☆'.repeat(e);
+    }
+
+    function showToast(msg, type = 'info') {
+      const c = document.getElementById('toast-container'); if (!c) return;
+      const icons = {success:'circle-check',info:'circle-info',error:'triangle-exclamation'};
+      const t = document.createElement('div');
+      t.className = `toast ${type==='error'?'warning':type}`;
+      t.innerHTML = `<i class="fa-solid fa-${icons[type]||'circle-info'}"></i><span>${msg}</span>`;
+      c.appendChild(t);
+      setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(50px)'; t.style.transition='all .3s'; setTimeout(()=>t.remove(),300); }, 3500);
+    }
+    window.showToast = showToast;
+
+    function renderProductCard(p) {
+      const inWish = wishlist.includes(p.id);
+      const bMap = {eco:'badge-eco',new:'badge-new',bestseller:'badge-bestseller',sale:'badge-sale'};
+      const bLbl = {eco:'🌿 Eco',new:'✨ New',bestseller:'🔥 Top Sell',sale:'🏷️ Sale'};
+      const disc = p.original_price ? Math.round((1-p.price/p.original_price)*100) : 0;
+      return `
+        <div class="product-card reveal" data-id="${p.id}" role="article" tabindex="0" aria-label="${p.name}">
+          <div class="product-img-wrap">
+            ${p.image ? `<img src="${p.image.split(',')[0].trim()}" alt="${p.name}" loading="lazy" />`
+              : `<div class="product-folder"><div class="folder-icon">📁</div><div class="folder-gallery"><span></span><span></span><span></span></div><div class="folder-label">${p.name}</div></div>`}
+            ${p.badge ? `<span class="product-badge ${bMap[p.badge]}">${bLbl[p.badge]}</span>` : ''}
+            <div class="product-actions" aria-hidden="true">
+              <button class="action-btn wishlist-btn ${inWish?'wishlist-active':''}" data-id="${p.id}" title="Wishlist" aria-label="Wishlist ${p.name}">
+                <i class="fa-${inWish?'solid':'regular'} fa-heart"></i>
+              </button>
+              <button class="action-btn quick-view-btn" data-id="${p.id}" title="Quick View" aria-label="Quick view ${p.name}">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-details-wrap">
+              <div class="product-category">🪷 Eco Ganesha · ${p.subcat}</div>
+              <h3 class="product-name"><a href="/pages/product.html?id=${p.id}" class="product-link">${p.name}</a></h3>
+              <p class="product-desc-short">${p.description||''}</p>
+            </div>
+            <div class="product-price-row">
+              <div class="price-group">
+                ${p.price !== null && p.price !== undefined ? `<span class="price-current">₹${p.price.toLocaleString('en-IN')}</span>` : ''}
+                ${p.original_price && p.price !== null && p.price !== undefined ? `<span class="price-original">₹${p.original_price.toLocaleString('en-IN')}</span>` : ''}
+              </div>
+              ${p.price !== null && p.price !== undefined ? `
+              <button class="add-to-cart-btn" data-id="${p.id}" data-name="${p.name}" aria-label="Add ${p.name} to cart">
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
+              ` : ''}
+            </div>
+            ${disc>0?`<div class="discount-save-tag">Save ${disc}%</div>`:''}
+          </div>
+        </div>`;
+    }
+
+    function bindCardEvents(container) {
+      container.querySelectorAll('.add-to-cart-btn').forEach(btn =>
+        btn.addEventListener('click', e => { e.stopPropagation(); addToCart(btn.dataset.id, btn.dataset.name); }));
+      container.querySelectorAll('.quick-view-btn, .product-card').forEach(el =>
+        el.addEventListener('click', e => { e.stopPropagation(); const id=el.dataset.id||el.closest('.product-card')?.dataset.id; if(id) openProductModal(id); }));
+      container.querySelectorAll('.wishlist-btn').forEach(btn =>
+        btn.addEventListener('click', e => { e.stopPropagation(); toggleWishlist(btn.dataset.id, btn); }));
+    }
+
+    function initScrollAnimations() {
+      const obs = new IntersectionObserver(entries =>
+        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:0.08});
+      document.querySelectorAll('.reveal').forEach(el => { if(!el.classList.contains('visible')) obs.observe(el); });
+    }
+
+    // ── Load products ──
+    async function loadProducts() {
+      const grid = document.getElementById('cat-grid');
+      const countEl = document.getElementById('cat-count');
+      grid.innerHTML = `<div style="grid-column:1/-1;display:flex;justify-content:center;align-items:center;padding:4rem;gap:1rem;color:var(--gray-400);">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size:1.8rem;color:var(--terracotta);"></i>
+        <span>Loading products…</span>
+      </div>`;
+      try {
+        if (allProductsData.length === 0) {
+          const res = await API.products.list({ category: 'ganesha', limit: 100 });
+          allProductsData = res.products || [];
+          renderFilterButtons();
+        }
+
+        let products = [...allProductsData];
+        if (activeFilter !== 'All') {
+          products = products.filter(p => p.subcat === activeFilter);
+        }
+
+        if (countEl) countEl.textContent = `${products.length} product${products.length !== 1 ? 's' : ''}`;
+        if (!products.length) {
+          grid.innerHTML = `<div class="cat-empty"><i class="fa-solid fa-magnifying-glass"></i><h3>No products found</h3><p>Try a different filter.</p></div>`;
+          return;
+        }
+        grid.innerHTML = products.map(renderProductCard).join('');
+        bindCardEvents(grid);
+        initScrollAnimations();
+      } catch (err) {
+        grid.innerHTML = `<div class="cat-empty"><i class="fa-solid fa-triangle-exclamation"></i><h3>Could not load products</h3><p>${err.message}</p></div>`;
+      }
+    }
+
+    function renderFilterButtons() {
+      const filterContainer = document.getElementById('cat-filters');
+      if (!filterContainer) return;
+      filterContainer.innerHTML = '';
+
+      const subcats = [...new Set(allProductsData.map(p => p.subcat).filter(Boolean))];
+
+      const btnAll = document.createElement('button');
+      btnAll.className = `filter-btn ${activeFilter === 'All' ? 'active' : ''}`;
+      btnAll.dataset.filter = 'All';
+      btnAll.textContent = 'All';
+      filterContainer.appendChild(btnAll);
+
+      subcats.forEach(sub => {
+        let emoji = '🏺';
+        const subLower = sub.toLowerCase();
+        if (subLower.includes('small')) emoji = '🔸';
+        else if (subLower.includes('medium')) emoji = '🔶';
+        else if (subLower.includes('large')) emoji = '🔷';
+
+        const btn = document.createElement('button');
+        btn.className = `filter-btn ${activeFilter === sub ? 'active' : ''}`;
+        btn.dataset.filter = sub;
+        btn.textContent = `${emoji} ${sub}`;
+        filterContainer.appendChild(btn);
+      });
+
+      filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.dataset.filter;
+          loadProducts();
+        });
+      });
+    }
+
+    // ── Wishlist ──
+    function toggleWishlist(id, btn) {
+      if (wishlist.includes(id)) {
+        wishlist = wishlist.filter(w => w !== id);
+        if (btn) { btn.classList.remove('wishlist-active'); btn.innerHTML = '<i class="fa-regular fa-heart"></i>'; }
+        showToast('Removed from wishlist', 'info');
+      } else {
+        wishlist.push(id);
+        if (btn) { btn.classList.add('wishlist-active'); btn.innerHTML = '<i class="fa-solid fa-heart"></i>'; }
+        showToast('💛 Added to wishlist!', 'success');
+      }
+      localStorage.setItem('ps_wishlist', JSON.stringify(wishlist));
+      const b = document.getElementById('wishlist-badge');
+      if (b) { b.textContent = wishlist.length; b.classList.toggle('hidden', wishlist.length === 0); }
+    }
+
+    // ── Wishlist sidebar ──
+    document.getElementById('wishlist-nav-btn')?.addEventListener('click', () => {
+      document.getElementById('cart-overlay')?.classList.remove('open');
+      document.getElementById('cart-sidebar')?.classList.remove('open');
+      document.getElementById('wishlist-overlay')?.classList.add('open');
+      document.getElementById('wishlist-sidebar')?.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    const closeWish = () => {
+      document.getElementById('wishlist-overlay')?.classList.remove('open');
+      document.getElementById('wishlist-sidebar')?.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+    document.getElementById('wishlist-close-btn')?.addEventListener('click', closeWish);
+    document.getElementById('wishlist-overlay')?.addEventListener('click', closeWish);
+
+    // ── Product Modal ──
+    async function openProductModal(id) {
+      const overlay = document.getElementById('modal-overlay');
+      const modal = document.getElementById('product-modal');
+      if (!overlay || !modal) return;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      modal.querySelector('.modal-main-img').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;"><i class="fa-solid fa-spinner fa-spin" style="color:var(--terracotta);"></i></div>';
+      try {
+        const res = await API.products.get(id);
+        const p = res.product; modalProduct = p; modalQty = 1;
+        const inWish = wishlist.includes(p.id);
+        const disc = (p.price && p.original_price) ? Math.round((1-p.price/p.original_price)*100) : 0;
+        modal.querySelector('.modal-category').textContent = `🪷 Eco-Friendly Ganesha · ${p.subcat}`;
+        modal.querySelector('.modal-name').textContent = p.name;
+        
+        // Hide ratings
+        const ratingEl = modal.querySelector('.modal-rating');
+        if (ratingEl) ratingEl.style.display = 'none';
+
+        if (p.price !== null && p.price !== undefined) {
+          modal.querySelector('.modal-price-current').textContent = `₹${p.price.toLocaleString('en-IN')}`;
+          modal.querySelector('.modal-price-original').textContent = p.original_price ? `₹${p.original_price.toLocaleString('en-IN')}` : '';
+          modal.querySelector('.modal-discount').textContent = disc > 0 ? `Save ${disc}%` : '';
+          modal.querySelector('.modal-qty-row').style.display = '';
+          modal.querySelector('.modal-add-cart').style.display = '';
+        } else {
+          modal.querySelector('.modal-price-current').textContent = 'No Price';
+          modal.querySelector('.modal-price-original').textContent = '';
+          modal.querySelector('.modal-discount').textContent = '';
+          modal.querySelector('.modal-qty-row').style.display = 'none';
+          modal.querySelector('.modal-add-cart').style.display = 'none';
+        }
+        modal.querySelector('.modal-desc').textContent = p.description || '';
+        modal.querySelector('.modal-qty-num').textContent = 1;
+        modal.querySelector('.modal-main-img').innerHTML = p.image
+          ? `<img src="${p.image.split(',')[0].trim()}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" />`
+          : `<div class="modal-emoji">${p.emoji}</div>`;
+        const featEl = modal.querySelector('.modal-features');
+        if (featEl) featEl.innerHTML = (p.features||[]).map(f=>`<span class="modal-feature-tag">✓ ${f}</span>`).join('');
+        const wishBtn = modal.querySelector('.modal-wishlist-btn');
+        if (wishBtn) {
+          wishBtn.className = `modal-wishlist-btn${inWish?' active':''}`;
+          wishBtn.innerHTML = `<i class="fa-${inWish?'solid':'regular'} fa-heart"></i>`;
+          wishBtn.onclick = () => { toggleWishlist(p.id,null); const n=wishlist.includes(p.id); wishBtn.className=`modal-wishlist-btn${n?' active':''}`; wishBtn.innerHTML=`<i class="fa-${n?'solid':'regular'} fa-heart"></i>`; };
+        }
+        const qtyNum = modal.querySelector('.modal-qty-num');
+        modal.querySelector('.modal-qty-minus').onclick = () => { modalQty=Math.max(1,modalQty-1); qtyNum.textContent=modalQty; };
+        modal.querySelector('.modal-qty-plus').onclick = () => { modalQty=Math.min(10,modalQty+1); qtyNum.textContent=modalQty; };
+        const addBtn = modal.querySelector('.modal-add-cart');
+        if (addBtn) addBtn.onclick = async () => { for(let i=0;i<modalQty;i++) await addToCart(p.id,p.name); closeProductModal(); };
+      } catch(err) { showToast(err.message,'error'); closeProductModal(); }
+    }
+    function closeProductModal() {
+      document.getElementById('modal-overlay')?.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('modal-overlay')?.addEventListener('click', e => { if(e.target===document.getElementById('modal-overlay')) closeProductModal(); });
+    document.getElementById('modal-close-btn')?.addEventListener('click', closeProductModal);
+    window.openProductModal = openProductModal;
+    window.closeProductModal = closeProductModal;
+
+    // ── Back to top ──
+    const btt = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => btt?.classList.toggle('visible', window.scrollY > 400));
+    btt?.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+
+    // ── Init wishlist badge ──
+    (function() {
+      const b = document.getElementById('wishlist-badge');
+      if (b) { b.textContent = wishlist.length; b.classList.toggle('hidden', wishlist.length === 0); }
+    })();
+
+    // ── Boot ──
+    document.addEventListener('DOMContentLoaded', async () => {
+      loadProducts();
+      await initCart?.();
+    });
+  </script>
+</body>
+</html>

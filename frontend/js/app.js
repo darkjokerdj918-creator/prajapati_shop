@@ -108,10 +108,10 @@ async function loadGaneshaProducts() {
   if (!grid) return;
   setGridLoading(grid);
   try {
+    // Homepage: show only 3 newest products
     const res = await API.products.list({
       category: 'ganesha',
-      subcat: activeGaneshaFilter !== 'All' ? activeGaneshaFilter : undefined,
-      search: searchQuery || undefined,
+      limit: 3,
     });
     allProducts.ganesha = res.products || [];
     renderProductGrid(grid, allProducts.ganesha);
@@ -129,23 +129,13 @@ async function loadHouseholdProducts() {
   if (!grid) return;
   setGridLoading(grid);
   try {
+    // Homepage: show only 3 newest products
     const res = await API.products.list({
       category: 'household',
-      subcat: activeHouseholdFilter !== 'All' ? activeHouseholdFilter : undefined,
-      search: searchQuery || undefined,
+      limit: 3,
     });
-    let products = res.products || [];
-    // Apply client-side sorting
-    if (listingSort === 'price-asc') products.sort((a,b) => (a.price||0) - (b.price||0));
-    else if (listingSort === 'price-desc') products.sort((a,b) => (b.price||0) - (a.price||0));
-    else if (listingSort === 'rating') products.sort((a,b) => (b.rating||0) - (a.rating||0));
-    allProducts.household = products;
+    allProducts.household = res.products || [];
     renderProductGrid(grid, allProducts.household);
-    // Apply view class
-    const hg = document.getElementById('household-grid');
-    if (hg) {
-      hg.classList.toggle('list-view', listingView === 'list');
-    }
   } catch (err) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--gray-400);">
       <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;display:block;margin-bottom:0.8rem;"></i>
@@ -228,7 +218,7 @@ function renderProductCard(p) {
     <div class="product-card reveal" data-id="${p.id}" role="article" tabindex="0" aria-label="${p.name}">
       <div class="product-img-wrap">
         ${p.image
-          ? `<img src="${p.image}" alt="${p.name}" loading="lazy" />`
+          ? `<img src="${p.image.split(',')[0].trim()}" alt="${p.name}" loading="lazy" />`
           : `<a href="pages/product.html?id=${p.id}" class="product-folder" aria-label="Open ${p.name}">
                <div class="folder-icon">📁</div>
                <div class="folder-gallery">
@@ -250,20 +240,18 @@ function renderProductCard(p) {
         <div class="product-details-wrap">
           <div class="product-category">${p.category === 'ganesha' ? '🪷 Eco Ganesha' : '🏠 Household'} · ${p.subcat}</div>
           <h3 class="product-name"><a href="pages/product.html?id=${p.id}" class="product-link">${p.name}</a></h3>
-          <div class="product-rating">
-            <div class="stars">${renderStars(p.rating)}</div>
-            <span class="rating-count">${p.rating} (${p.reviews})</span>
-          </div>
           <p class="product-desc-short">${p.description || ''}</p>
         </div>
         <div class="product-price-row">
           <div class="price-group">
-            <span class="price-current">₹${p.price.toLocaleString('en-IN')}</span>
-            ${p.original_price ? `<span class="price-original">₹${p.original_price.toLocaleString('en-IN')}</span>` : ''}
+            ${p.price !== null && p.price !== undefined ? `<span class="price-current">₹${p.price.toLocaleString('en-IN')}</span>` : ''}
+            ${p.original_price && p.price !== null && p.price !== undefined ? `<span class="price-original">₹${p.original_price.toLocaleString('en-IN')}</span>` : ''}
           </div>
+          ${p.price !== null && p.price !== undefined ? `
           <button class="add-to-cart-btn" data-id="${p.id}" data-name="${p.name}" aria-label="Add ${p.name} to cart">
             <i class="fa-solid fa-cart-plus"></i>
           </button>
+          ` : ''}
         </div>
         ${discount > 0 ? `<div class="discount-save-tag">Save ${discount}%</div>` : ''}
       </div>
@@ -335,20 +323,33 @@ async function openProductModal(id) {
     modalProduct = p;
     modalQty = 1;
     const inWish = wishlist.includes(p.id);
-    const discount = p.original_price ? Math.round((1 - p.price / p.original_price) * 100) : 0;
+    const discount = (p.price && p.original_price) ? Math.round((1 - p.price / p.original_price) * 100) : 0;
 
     modal.querySelector('.modal-category').textContent =
       `${p.category === 'ganesha' ? '🪷 Eco-Friendly Ganesha' : '🏠 Household'} · ${p.subcat}`;
     modal.querySelector('.modal-name').textContent    = p.name;
-    modal.querySelector('.modal-stars').innerHTML     = renderStars(p.rating);
-    modal.querySelector('.modal-rating-text').textContent = `${p.rating} · ${p.reviews} reviews`;
-    modal.querySelector('.modal-price-current').textContent  = `₹${p.price.toLocaleString('en-IN')}`;
-    modal.querySelector('.modal-price-original').textContent = p.original_price ? `₹${p.original_price.toLocaleString('en-IN')}` : '';
-    modal.querySelector('.modal-discount').textContent = discount > 0 ? `Save ${discount}%` : '';
+    
+    // Hide ratings
+    const ratingEl = modal.querySelector('.modal-rating');
+    if (ratingEl) ratingEl.style.display = 'none';
+
+    if (p.price !== null && p.price !== undefined) {
+      modal.querySelector('.modal-price-current').textContent  = `₹${p.price.toLocaleString('en-IN')}`;
+      modal.querySelector('.modal-price-original').textContent = p.original_price ? `₹${p.original_price.toLocaleString('en-IN')}` : '';
+      modal.querySelector('.modal-discount').textContent = discount > 0 ? `Save ${discount}%` : '';
+      modal.querySelector('.modal-qty-row').style.display = '';
+      modal.querySelector('.modal-add-cart').style.display = '';
+    } else {
+      modal.querySelector('.modal-price-current').textContent  = 'No Price';
+      modal.querySelector('.modal-price-original').textContent = '';
+      modal.querySelector('.modal-discount').textContent = '';
+      modal.querySelector('.modal-qty-row').style.display = 'none';
+      modal.querySelector('.modal-add-cart').style.display = 'none';
+    }
     modal.querySelector('.modal-desc').textContent    = p.description || '';
     modal.querySelector('.modal-qty-num').textContent = 1;
     modal.querySelector('.modal-main-img').innerHTML  = p.image
-      ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" />`
+      ? `<img src="${p.image.split(',')[0].trim()}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" />`
       : `<div class="modal-emoji">${p.emoji}</div>`;
 
     // Features
@@ -412,7 +413,7 @@ function renderCarousel(products) {
   track.innerHTML = products.map(p => `
     <div class="carousel-card" data-id="${p.id}" role="listitem" tabindex="0" aria-label="${p.name}">
       <div class="carousel-card-img">
-        ${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" />` : p.emoji}
+        ${p.image ? `<img src="${p.image.split(',')[0].trim()}" alt="${p.name}" loading="lazy" />` : p.emoji}
       </div>
       <div class="carousel-card-info">
         <div class="carousel-card-name">${p.name}</div>
@@ -627,7 +628,7 @@ async function fetchAndRenderWishlist() {
     const html = wishlistProducts.map(p => `
       <div class="cart-item" data-wishlist-id="${p.id}">
         <div class="cart-item-img">
-          ${p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<div class="cart-item-emoji">${p.emoji}</div>`}
+          ${p.image ? `<img src="${p.image.split(',')[0].trim()}" alt="${p.name}" />` : `<div class="cart-item-emoji">${p.emoji}</div>`}
         </div>
         <div class="cart-item-info">
           <div class="cart-item-name" style="cursor:pointer;font-weight:700;" onclick="openProductModalFromWishlist('${p.id}')">${p.name}</div>
